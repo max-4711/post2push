@@ -15,7 +15,7 @@ steps:
 
 - script: sudo npm install -g tsc
 
-- script: tsc --target ES6 --strict true --project Server/Post2Push/tsconfig.json
+- script: tsc --project Server/Post2Push/tsconfig.json
 
 - task: Npm@1
   displayName: 'npm test'
