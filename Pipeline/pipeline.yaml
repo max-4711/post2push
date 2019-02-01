@@ -9,13 +9,21 @@ steps:
     versionSpec: '8.x'
   
 - task: Npm@1
-  displayName: 'npm install'
+  displayName: 'install npm'
   inputs:
     command: install
 
 - script: sudo npm install -g typescript
+  displayName: 'npm install typescript'
+
+- script: sudo npm install -g express
+  displayName: 'npm install express'
+
+- script: sudo npm install push.js -g --save
+  displayName: 'npm install push.js'
 
 - script: tsc --project Server/Post2Push
+  displayName: 'Compile TypeScript'
 
 - task: Npm@1
   displayName: 'npm test'
