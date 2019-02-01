@@ -28,7 +28,7 @@ steps:
 - script: sudo npm install push.js -g --save
   displayName: 'npm install push.js'
 
-- script: tsc --project Server/Post2Push
+- script: sudo tsc --project Server/Post2Push
   displayName: 'Compile TypeScript'
 
 - task: Npm@1
