@@ -16,19 +16,11 @@ steps:
 - script: sudo npm install -g typescript
   displayName: 'npm install typescript'
 
-- script: sudo npm install -g express
-  displayName: 'npm install express'
+- bash: yarn install --production=true
+  displayName: 'Install dependencies (yarn)'
+  workingDirectory: Server/Post2Push
 
-- script: sudo npm install -g path
-  displayName: 'npm install path'
-
-- script: sudo npm install -g debug
-  displayName: 'npm install debug'
-
-- script: sudo npm install push.js -g --save
-  displayName: 'npm install push.js'
-
-- script: sudo tsc --project Server/Post2Push
+- script: tsc --project Server/Post2Push
   displayName: 'Compile TypeScript'
 
 - task: Npm@1
