@@ -20,6 +20,10 @@ steps:
   displayName: 'Install dependencies (yarn)'
   workingDirectory: Server/Post2Push
 
+- bash: sudo npm install -S @types/node
+  displayName: 'Install node types'
+  workingDirectory: Server/Post2Push
+
 - script: tsc --project Server/Post2Push
   displayName: 'Compile TypeScript'
 
