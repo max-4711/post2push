@@ -2,19 +2,18 @@
 import express = require('express');
 import path = require('path');
 
-import routes from './routes/index';
-import users from './routes/user';
+import getEndpoints from './routes/get';
+import postEndpoints from './routes/post';
+import deleteEndpoints from './routes/delete';
 
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+app.use('/', getEndpoints);
+app.use('/', postEndpoints);
+app.use('/', deleteEndpoints);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
