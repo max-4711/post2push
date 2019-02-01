@@ -13,7 +13,7 @@ steps:
   inputs:
     command: install
 
-- script: sudo npm install -g tsc
+- script: sudo npm install -g typescript
 
 - script: tsc --project Server/Post2Push
 
