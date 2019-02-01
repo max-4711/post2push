@@ -1,11 +1,21 @@
-﻿var dbconfig = {
-    host: 'localhost',
-    database: 'PIPELINE_INSERT_DATABASE_NAME',
-    user: 'PIPELINE_INSERT_DATABASE_USER',
-    password: 'PIPELINE_INSERT_DATABASE_PASSWORD',
-    port: 3306,
-    connectionLimit: 20,
-    waitForConnections: true
-};
+﻿class DbConfig {
+    public host: string;
+    public database: string;
+    public user: string;
+    public password: string;
+    public port: number;
+    public connectionLimit: number;
+    public waitForConnections: boolean;
 
-module.exports = dbconfig;
+    constructor() {
+        this.host = 'localhost';
+        this.database = 'PIPELINE_INSERT_DATABASE_NAME';
+        this.user = 'PIPELINE_INSERT_DATABASE_USER';
+        this.password = 'PIPELINE_INSERT_DATABASE_PASSWORD';
+        this.port = 3306;
+        this.connectionLimit = 20;
+        this.waitForConnections = true;
+    }
+}
+
+export = DbConfig;

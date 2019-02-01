@@ -38,7 +38,16 @@
     <TypeScriptCompile Include="config\app.config.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="middleware\db.init.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="config\db.config.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="helpers\tokengenerator.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="middleware\getDbConnection.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="routes\delete.ts">
@@ -52,6 +61,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="config\" />
+    <Folder Include="helpers\" />
+    <Folder Include="middleware\" />
     <Folder Include="public\" />
     <Folder Include="routes\" />
   </ItemGroup>

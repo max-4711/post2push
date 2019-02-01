@@ -2,13 +2,19 @@
  * DELETE routes
  */
 import express = require('express');
+import mysql = require('mysql');
 const router = express.Router();
 
-router.get('/subscription', (req: express.Request, res: express.Response) => {
+const middleware = {
+    getDbConnection: require('../middleware/getDbConnection')
+};
+router.use(middleware.getDbConnection);
+
+router.delete('/subscription', (req: express.Request, res: express.Response) => {
     res.send("TODO");
 });
 
-router.get('/channel', (req: express.Request, res: express.Response) => {
+router.delete('/channel', (req: express.Request, res: express.Response) => {
     res.send("TODO");
 });
 

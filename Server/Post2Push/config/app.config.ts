@@ -1,17 +1,9 @@
-﻿/**
- * Erzeugt neuen Connection-Pool zur MySQL-Datenbank
- */
-import mysql = require('mysql');
+﻿class AppConfig {
+    public channelcreationsecret: string;
 
-var dbconfig = require('db.config.js');
+    constructor() {
+        this.channelcreationsecret = 'PIPELINE_INSERT_CHANNELCREATIONSECRET';
+    }
+}
 
-var pool = mysql.createPool({
-    connectionLimit: 20,
-    host: dbconfig.host,
-    database: dbconfig.database,
-    user: dbconfig.user,
-    password: dbconfig.password,
-    waitForConnections: dbconfig.waitForConnections
-});
-
-module.exports = pool;
+export = AppConfig;
