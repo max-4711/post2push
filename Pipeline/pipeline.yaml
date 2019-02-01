@@ -19,6 +19,12 @@ steps:
 - script: sudo npm install -g express
   displayName: 'npm install express'
 
+- script: sudo npm install -g path
+  displayName: 'npm install path'
+
+- script: sudo npm install -g debug
+  displayName: 'npm install debug'
+
 - script: sudo npm install push.js -g --save
   displayName: 'npm install push.js'
 
