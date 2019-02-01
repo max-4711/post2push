@@ -16,7 +16,7 @@ steps:
 - script: sudo npm install -g typescript
   displayName: 'npm install typescript'
 
-- bash: yarn install --production=true
+- bash: sudo yarn install --production=true
   displayName: 'Install dependencies (yarn)'
   workingDirectory: Server/Post2Push
 
