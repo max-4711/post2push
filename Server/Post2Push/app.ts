@@ -34,10 +34,11 @@ app.use(function (req, res, next) {
 // development error handler: stacktraces
 if (app.get('env') === 'development') {
     app.use((err: any, req, res, next) => {
-        res.status(400).send('error', {
-            message: err.message,
-            error: err
-        });
+        res.status(err['status'] || 500).json({ 'Error': err.message }).end();
+        //res.status(400).send('error', {
+        //    message: err.message,
+        //    error: err
+        //});
         //res.status(err['status'] || 500).send('error', {
         //    message: err.message,
         //    error: err
