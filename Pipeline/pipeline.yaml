@@ -51,7 +51,7 @@ steps:
 #   inputs:
 #     contents: './Server/Post2Push/*.ts;' #Server/Post2Push/**/*.ts;Server/Post2Push/*.js.map;Server/**/*.js.map;Server/Post2Push/README.md;-Server/Post2Push/node_modules'
 
-- bash: find ./Post2Push/ -maxdepth 2 -type f -name "*.ts" -o -name "*.js.map" -o -name ".md" -delete -not "*node_modules*"
+- bash: find ./Post2Push/ -maxdepth 2 -type f -name "*.ts" -o -name "*.js.map" -o -name ".md" -delete
   displayName: 'delete non-deployment files'
   workingDirectory: Server
 
