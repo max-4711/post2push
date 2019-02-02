@@ -42,7 +42,7 @@ router.post('/', (req: any, res: express.Response) => {
         return;
     }
 
-    var getAffectedChannelQuery = 'SELECT subscription_secret FROM channel WHERE name = ?';
+    var getAffectedChannelQuery = 'SELECT name, subscription_secret FROM channel WHERE name = ?';
     getAffectedChannelQuery = mysql.format(getAffectedChannelQuery, req.body.ChannelName);
 
     req.connection.query(getAffectedChannelQuery, function (err, channelRows) {
@@ -92,7 +92,7 @@ router.post('/', (req: any, res: express.Response) => {
 
             res.status(201).json({ 'Message': 'Subscription created' }).end();
 
-            var payload = JSON.stringify({ title: 'Pling!' });
+            var payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert.' });
             webpush.sendNotification(req.body.DeliveryDetails, payload).catch(error => {
                 console.error('Error while sending push notification: ' + error.stack);
             })

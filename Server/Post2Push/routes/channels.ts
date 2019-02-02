@@ -81,6 +81,100 @@ router.post('/', (req: any, res: express.Response) => {
 });
 
 router.post('/:name/push', (req: any, res: express.Response) => {
+    var type = req.headers['content-type'];
+
+    if (type !== 'application/json') {
+        res.status(406).json({ 'Error': 'Only type application/json supported' }).end();
+        return;
+    }
+
+    if (req.params.name === null || typeof req.params.name === 'undefined') {
+        res.status(400).json({ 'Error': 'Missing name' }).end();
+        return;
+    }
+    if (req.body.MessageContent === null || typeof req.body.MessageContent === 'undefined') {
+        res.status(400).json({ 'Error': 'Missing MessageContent' }).end();
+        return;
+    }
+    if (req.body.MessageTitle === null || typeof req.body.MessageTitle === 'undefined') {
+        res.status(400).json({ 'Error': 'Missing MessageTitle' }).end();
+        return;
+    }
+    if (req.body.PushSecret === null || typeof req.body.PushSecret === 'undefined') {
+        res.status(401).json({ 'Error': 'Missing PushSecret' }).end();
+        return;
+    }
+
+    var getAffectedChannelQuery = 'SELECT name, push_secret FROM channel WHERE name = ?';
+    getAffectedChannelQuery = mysql.format(getAffectedChannelQuery, req.params.name);
+
+    req.connection.query(getAffectedChannelQuery, function (err, channelRows) {
+        if (err) {
+            req.connection.release();
+            res.status(500).json({ 'Error': 'Unknown database error' }).end();
+            return;
+        }
+
+        if (channelRows.length === 0) {
+            req.connection.release();
+            res.status(400).json({ 'Error': 'Channel not existing' }).end();
+            return;
+        }
+
+        if (channelRows[0].push_secret !== req.body.PushSecret) {
+            res.status(401).json({ 'Error': 'Invalid PushSecret' }).end();
+            return;
+        }
+
+        var updateChannelQuery = 'UPDATE channel SET last_push_timestamp = TIMESTAMP() WHERE name = ?';
+        updateChannelQuery = mysql.format(updateChannelQuery, req.params.name);
+
+        req.connection.query(getAffectedChannelQuery, function (err, channelRows) {
+            if (err) {
+                req.connection.release();
+                res.status(500).json({ 'Error': 'Unknown database error' }).end();
+                return;
+            }
+
+            if (channelRows.length === 0) {
+                req.connection.release();
+                res.status(400).json({ 'Error': 'Channel not existing' }).end();
+                return;
+            }
+
+            if (channelRows[0].push_secret !== req.body.PushSecret) {
+                res.status(401).json({ 'Error': 'Invalid PushSecret' }).end();
+                return;
+            }
+
+            var getReceiversQuery = 'SELECT token, delivery_details FROM subscription WHERE channel_name = ?';
+            getReceiversQuery = mysql.format(getReceiversQuery, req.params.name);
+
+            req.connection.query(getReceiversQuery, function (err, receiverRows) {
+                req.connection.release();
+                if (err) {                    
+                    res.status(500).json({ 'Error': 'Unknown database error' }).end();
+                    return;
+                }
+
+                var payload = JSON.stringify({ title: req.body.MessageTitle, body: req.body.MessageContent });
+
+                var errorsCounter = 0;
+                var index;
+                for (index = 0; index < receiverRows.length; index++) {
+                    var receiverData = JSON.parse(receiverRows[index].delivery_details);
+                    webpush.sendNotification(receiverData, payload).catch(error => {
+                        errorsCounter++;
+                        console.error('Error while sending push notification: ' + error.stack);
+                    })
+                }
+
+                var successfullySentCount = receiverRows.length - errorsCounter;
+                res.status(200).json({ 'Message': 'Push notifications sent.', 'Errors': errorsCounter, 'Successful': successfullySentCount, 'Total': receiverRows.length }).end();
+            });
+        });
+    });
+
     res.status(501).json({ 'Error': 'Not yet implemented.' }).end();
     return;
 });

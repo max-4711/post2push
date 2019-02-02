@@ -10,7 +10,7 @@
 -> gewünschter Channel-Name, Channel-Creation-Secret, gewünschtes Channel-Subscription-Secret (optional)
 
 ###POST /channels/<name>/push
--> Channel-Name, Channel-Push-Secret, Nachricht
+-> Channel-Name, Channel-Push-Secret, Nachricht, Titel
 <- Anzahl Empfänger?
 
 ###DELETE /channels/<name>
