@@ -29,7 +29,7 @@ async function run() {
     };
 
     console.log('Sending push');
-    await fetch('/subscribe', {
+    await fetch('https://PIPELINE_INSERT_APP_URL/subscriptions', {
         method: 'POST',
         body: JSON.stringify(subscription),
         headers: {
@@ -37,4 +37,21 @@ async function run() {
         }
     });
     console.log('Sent push');
+}
+
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+
+    return outputArray;
 }
