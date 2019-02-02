@@ -8,25 +8,26 @@ import baseEndpoints from './routes/get';
 import channelEndpoints from './routes/channels';
 import subscriptionEndpoints from './routes/subscriptions';
 
+const appConfig = new AppConfiguration();
+
 console.log("Initializing express...");
 var app = express();
-app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use(appConfig.baseRoute + '/public', express.static(path.join(__dirname, 'public')));
 
 console.log("Configuring routes...");
-app.use('/', baseEndpoints);
-app.use('/channels', channelEndpoints);
-app.use('/subscriptions', subscriptionEndpoints);
+app.use(appConfig.baseRoute + '/', baseEndpoints);
+app.use(appConfig.baseRoute + '/channels', channelEndpoints);
+app.use(appConfig.baseRoute + '/subscriptions', subscriptionEndpoints);
 
 app.use(require('body-parser').json());
 
 console.log("Setting up vapid...");
-const appConfig = new AppConfiguration();
 //webpush.setVapidDetails(appConfig.vapidContactInfo, appConfig.publicVapidKey, appConfig.privateVapidKey);
 
 // catch 404 and forward to error handler
 console.log("Configuring error handlers...");
 app.use(function (req, res, next) {
-    var err = new Error('Route ' + req.path + ' / ' + req.originalUrl + ' not existing.');
+    var err = new Error('Route ' + req.originalUrl + ' does not exist.');
     err['status'] = 404;
     next(err);
 });
