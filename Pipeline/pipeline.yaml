@@ -49,7 +49,7 @@ steps:
 - task: DeleteFiles@1
   displayName: 'delete non-deployment files'
   inputs:
-    contents: 'Server/**/*.ts' #;Server/**/*.js.map;Server/**/*.md;-**/node_modules
+    contents: 'Server/**/*.ts;-**/node_modules' #;Server/**/*.js.map;Server/**/*.md
 
 - bash: sed -i -e 's/PIPELINE_INSERT_CHANNELCREATIONSECRET/$(deployment.channelCreationSecret)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PUBLICVAPIDKEY/$(deployment.vapidPublicKey)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PRIVATEVAPIDKEY/$(deployment.vapidPrivateKey)/g' app.config.js
   displayName: 'Prepare app.config for deployment'
