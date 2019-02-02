@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>post2push - Receiver registration</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script type="application/javascript" src="https://PIPELINE_INSERT_APP_URL/public/client.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+    <br />
+    This webpage is a tool to subscribe to channels and create new ones. Not all functionality of the post2push api, including posting into channels, is supported.<br />
+    Please visit the <a href="https://PIPELINE_INSERT_APP_URL/public/api.html">api reference</a> for further information.
+
+    <label for="basic-url">Subscribe to push channel</label>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">Channel name:</span>
+        </div>
+        <input type="text" class="form-control" id="subscribe_channelnameinput" aria-describedby="basic-addon3">
+    </div>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">Channel subscription secret (if needed):</span>
+        </div>
+        <input type="text" class="form-control" id="subscribe_channelsubscriptionsecret" aria-describedby="basic-addon3">
+    </div>
+    <button type="button" class="btn btn-primary" onclick="subscribechannel()">Subscribe</button><br />
+    <label id="subscribe_apiresponse"></label><br />
+    Please accept, if your browser asks for your approval to receive push notifications from this site. If it doesn't ask, please update to a newer one supporting the 'VAPID' standard. Upon successfully subscribing, you will receive a confirmation via push notification.
+
+    <br />
+    <hr />
+    <br />
+
+    <label for="basic-url">Create new push channel</label>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">Channel name:</span>
+        </div>
+        <input type="text" class="form-control" id="create_channelnameinput" aria-describedby="basic-addon3">
+    </div>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">Channel subscription secret (if desired):</span>
+        </div>
+        <input type="text" class="form-control" id="create_channelsubscriptionsecret" aria-describedby="basic-addon3">
+    </div>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">Notification icon URI:</span>
+        </div>
+        <input type="text" class="form-control" id="create_notificationiconuri" aria-describedby="basic-addon3">
+    </div>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon3">Channel creation secret:</span>
+        </div>
+        <input type="text" class="form-control" id="create_channelcreationsecret" aria-describedby="basic-addon3">
+    </div>
+    <button type="button" class="btn btn-primary" onclick="createchannel()">Create</button><br />
+    <label id="create_apiresponse"></label><br />
+
+    <!--Bootstrap-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

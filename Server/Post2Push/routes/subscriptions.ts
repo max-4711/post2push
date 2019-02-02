@@ -99,6 +99,11 @@ router.post('/', (req: any, res: express.Response) => {
                 createSubscriptionQuery = mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, deliveryDetailsStringified]);
             }
             else {
+                if (req.body.Name.length > 100) {
+                    res.status(400).json({ 'Error': 'Maximum supported length for subscription name is 100 characters' }).end();
+                    return;
+                }
+
                 createSubscriptionQuery = 'INSERT INTO subscription (token, channel_name, name, delivery_details) VALUES (?, ?, ?, ?)';
                 createSubscriptionQuery = mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, req.body.Name, deliveryDetailsStringified]);
             }

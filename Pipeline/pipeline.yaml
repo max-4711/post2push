@@ -66,7 +66,7 @@ steps:
   displayName: 'Prepare db.config for deployment'
   workingDirectory: Server/Post2Push/config
 
-- bash: sed -i -e 's/PIPELINE_INSERT_PUBLICVAPIDKEY/$(deployment.vapidPublicKey)/g' client.js && sed -i -e 's#PIPELINE_INSERT_APP_URL#$(deployment.appUrl)#g' worker.js && sed -i -e 's#PIPELINE_INSERT_APP_URL#$(deployment.appUrl)#g' test.html && sed -i -e 's#PIPELINE_INSERT_APP_URL#$(deployment.appUrl)#g' client.js
+- bash: sed -i -e 's/PIPELINE_INSERT_PUBLICVAPIDKEY/$(deployment.vapidPublicKey)/g' client.js && sed -i -e 's/PIPELINE_INSERT_PUBLICVAPIDKEY/$(deployment.vapidPublicKey)/g' testclient.js && sed -i -e 's#PIPELINE_INSERT_APP_URL#$(deployment.appUrl)#g' worker.js && sed -i -e 's#PIPELINE_INSERT_APP_URL#$(deployment.appUrl)#g' test.html && sed -i -e 's#PIPELINE_INSERT_APP_URL#$(deployment.appUrl)#g' index.html && sed -i -e 's#PIPELINE_INSERT_APP_URL#$(deployment.appUrl)#g' client.js && sed -i -e 's#PIPELINE_INSERT_APP_URL#$(deployment.appUrl)#g' testclient.js
   displayName: 'Prepare client-side javascript for deployment'
   workingDirectory: Server/Post2Push/public
 

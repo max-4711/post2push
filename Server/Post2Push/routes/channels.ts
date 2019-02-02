@@ -46,6 +46,10 @@ router.post('/', (req: any, res: express.Response) => {
         res.status(401).json({ 'Error': 'Invalid ChannelCreationSecret' }).end();
         return;
     }
+    if (req.body.Name.length > 100) {
+        res.status(400).json({ 'Error': 'Maximum supported length for channel name is 100 characters' }).end();
+        return;
+    }
 
     let pushSecret = tokenGenerator.Generate(50);
 
@@ -58,7 +62,7 @@ router.post('/', (req: any, res: express.Response) => {
         }
         else {
             if (req.body.IconUrl.length > 100) {
-                res.status(400).json({ 'Error': 'Maximum supported length for icon URLs is 100 characters' }).end();
+                res.status(400).json({ 'Error': 'Maximum supported length for icon URL is 100 characters' }).end();
                 return;
             }
 
@@ -79,7 +83,7 @@ router.post('/', (req: any, res: express.Response) => {
         }
         else {
             if (req.body.IconUrl.length > 100) {
-                res.status(400).json({ 'Error': 'Maximum supported length for icon URLs is 100 characters' }).end();
+                res.status(400).json({ 'Error': 'Maximum supported length for icon URL is 100 characters' }).end();
                 return;
             }
 
@@ -223,6 +227,14 @@ router.delete('/:name/push', (req: any, res: express.Response) => {
 router.delete('/:name', (req: any, res: express.Response) => {
     if (req.params.name === null || typeof req.params.name === 'undefined') {
         res.status(400).json({ 'Error': 'Missing name' }).end();
+        return;
+    }
+    if (req.body.ChannelCreationSecret === null || typeof req.body.ChannelCreationSecret === 'undefined') {
+        res.status(401).json({ 'Error': 'Missing ChannelCreationSecret' }).end();
+        return;
+    }
+    if (req.body.ChannelCreationSecret !== appConfig.channelcreationsecret) {
+        res.status(401).json({ 'Error': 'Invalid ChannelCreationSecret' }).end();
         return;
     }
 

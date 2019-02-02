@@ -1,18 +1,53 @@
 ﻿const publicVapidKey = 'PIPELINE_INSERT_PUBLICVAPIDKEY';
 
-if ('serviceWorker' in navigator) {
-    console.log('Registering service worker');
+function subscribechannel() {
+    if ('serviceWorker' in navigator) {
+        run().catch(error => console.error(error));
+    }
+    else {
+        alert('Your browser does not support service workers. Unfortunately, service workers are required to implement background notifications. Please try another browser.');
+    }    
+}
 
-    run().catch(error => console.error(error));
+function createchannel() {
+    var channelname = document.getElementById('create_channelnameinput').value;
+    var subscriptionsecret = document.getElementById('create_channelsubscriptionsecret').value;
+    var notificationiconuri = document.getElementById('create_notificationiconuri').value;
+    var channelcreationsecret = document.getElementById('create_channelcreationsecret').value;
+
+    var payload = {
+        Name = channelname,
+        ChannelCreationSecret = channelcreationsecret
+    };
+    if (subscriptionsecret !== null && typeof subscriptionsecret !== 'undefined' && subscriptionsecret !== '') {
+        payload.SubscriptionSecret = subscriptionsecret;
+    }
+    if (notificationiconuri !== null && typeof notificationiconuri !== 'undefined' && notificationiconuri !== '') {
+        payload.IconUrl = notificationiconuri;
+    }
+
+    var response = await fetch('https://PIPELINE_INSERT_APP_URL/channels', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: {
+            'content-type': 'application/json'
+        }
+    });
+
+    if (response.body.SubscriptionToken === null || typeof response.body.SubscriptionToken === 'undefined') {
+        document.getElementById('create_apiresponse').innerText = response.body.Error;
+    }
+    else {
+        document.getElementById('create_apiresponse').innerText = response.body.Message + ', PushSecret: ' + response.body.PushSecret;
+    }
 }
 
 async function run() {
-    console.log('Registering service worker');
+    console.log('Registering service worker...');
     const registration = await navigator.serviceWorker.
         register('https://PIPELINE_INSERT_APP_URL/public/worker.js', { scope: '/post2push/public/' });
-    console.log('Registered service worker');
 
-    console.log('Registering push');
+    console.log('Registering push...');
     var deliveryDetails = await registration.pushManager.
         subscribe({
             userVisibleOnly: true,
@@ -20,16 +55,18 @@ async function run() {
             // https://www.npmjs.com/package/web-push#using-vapid-key-for-applicationserverkey
             applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
         });
-    console.log('Registered push');
+
+    var channelname = document.getElementById('subscribe_channelnameinput').value;
+    var subscriptionsecret = document.getElementById('subscribe_channelsubscriptionsecret').value;
 
     var subscription = {
-        ChannelName: 'TestChannel',
+        ChannelName: channelname,
         DeliveryDetails: deliveryDetails,
-        ChannelSubscriptionSecret: 'TestChannelSecret'
+        ChannelSubscriptionSecret: subscriptionsecret
     };
 
-    console.log('Sending push');
-    await fetch('https://PIPELINE_INSERT_APP_URL/subscriptions', {
+    console.log('Sending push endpoint data...');
+    var response = await fetch('https://PIPELINE_INSERT_APP_URL/subscriptions', {
         method: 'POST',
         body: JSON.stringify(subscription),
         headers: {
@@ -37,6 +74,13 @@ async function run() {
         }
     });
     console.log('Sent push');
+
+    if (response.body.SubscriptionToken === null || typeof response.body.SubscriptionToken === 'undefined') {
+        document.getElementById('subscribe_apiresponse').innerText = response.body.Error; 
+    }
+    else {
+        document.getElementById('subscribe_apiresponse').innerText = response.body.Message + ', SubscriptionToken: ' + response.body.SubscriptionToken; 
+    }
 }
 
 function urlBase64ToUint8Array(base64String) {
