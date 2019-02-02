@@ -8,7 +8,7 @@ import baseEndpoints from './routes/get';
 import channelEndpoints from './routes/channels';
 import subscriptionEndpoints from './routes/subscriptions';
 
-console.log("Initialiting express...");
+console.log("Initializing express...");
 var app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -53,11 +53,12 @@ app.use((err: any, req, res, next) => {
 var port = 3000;
 if (process.env.PORT !== null && typeof process.env.PORT !== 'undefined') {
     port = +process.env.PORT;
+    console.log("Using port " + port + " configured in environment variable 'PORT'.");
 }
 
 app.set('port', port);
 
-console.log("Listening on port " + process.env.PORT || 3000);
+console.log("Listening on port " + port);
 
 var server = app.listen(app.get('port'), function () {
     debug('Express server listening on port ' + server.address().port);
