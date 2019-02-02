@@ -27,24 +27,24 @@ steps:
 - script: tsc --project Server/Post2Push
   displayName: 'Compile TypeScript'
 
-- task: Npm@1
-  displayName: 'npm test'
-  inputs:
-    command: custom
-    customCommand: 'test'
-    workingDir: Server/Post2Push
+# - task: Npm@1
+#   displayName: 'npm test'
+#   inputs:
+#     command: custom
+#     customCommand: 'test'
+#     workingDir: Server/Post2Push
 
-- task: PublishTestResults@2
-  inputs:
-    testResultsFiles: '**/TEST-RESULTS.xml'
-    testRunTitle: 'Test results for JavaScript'
-  condition: succeededOrFailed()
+# - task: PublishTestResults@2
+#   inputs:
+#     testResultsFiles: '**/TEST-RESULTS.xml'
+#     testRunTitle: 'Test results for JavaScript'
+#   condition: succeededOrFailed()
 
-- task: PublishCodeCoverageResults@1
-  inputs: 
-    codeCoverageTool: Cobertura
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
-    reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
+# - task: PublishCodeCoverageResults@1
+#   inputs: 
+#     codeCoverageTool: Cobertura
+#     summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
+#     reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
 
 - bash: sudo find ./ -maxdepth 2 -type f -name "*.ts" -delete
   displayName: 'delete typescript sources'

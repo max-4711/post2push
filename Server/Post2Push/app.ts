@@ -49,7 +49,13 @@ app.use((err: any, req, res, next) => {
     });
 });
 
-app.set('port', process.env.PORT || 3000);
+
+var port = 3000;
+if (process.env.PORT !== null && typeof process.env.PORT !== 'undefined') {
+    port = +process.env.PORT;
+}
+
+app.set('port', port);
 
 console.log("Listening on port " + process.env.PORT || 3000);
 
