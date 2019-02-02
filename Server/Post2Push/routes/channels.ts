@@ -256,7 +256,6 @@ router.delete('/:name', (req: any, res: express.Response) => {
 
         res.status(200).json({ 'Message': 'Channel successfully deleted.' });
     });
-    return;
 });
 
 router.get('/:name', (req: any, res: express.Response) => {

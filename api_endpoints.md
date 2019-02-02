@@ -4,6 +4,17 @@
 __Description:__ Can be used as indicator for availability of the post2push service.
 
 
+## DELETE /
+__Description:__ Initiates a cleanup mechanism: Channels not used for at least 180 days and their subscribers will be purged from the database.
+
+__Parameters:__
+* ChannelCreationSecret: Secret configured in app.config.js in order to prove to be authorized to delete channels.
+
+__Returns:__
+* Error (if applicable): One sentence explaining what has gone wrong.
+* Message (if applicable): Confirmation for channel deletion, including the number of affected database rows.
+
+
 ## POST /channels/
 __Description:__ Creates a new push channel.
 
