@@ -13,7 +13,7 @@ const appConfig = new AppConfiguration();
 console.log("Initializing express...");
 var app = express();
 app.use(require('body-parser').json());
-app.use(app.router);
+//app.use(app.router);
 app.use(appConfig.baseRoute + '/public', express.static(path.join(__dirname, 'public')));
 
 console.log("Configuring routes...");
