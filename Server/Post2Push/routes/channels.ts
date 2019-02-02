@@ -83,7 +83,7 @@ router.post('/', (req: any, res: express.Response) => {
                 return;
             }
 
-            createChannelQuery = 'INSERT INTO channel (name, push_secret, subscription_secret) VALUES (?, ?, ?, ?)';
+            createChannelQuery = 'INSERT INTO channel (name, push_secret, subscription_secret, icon_url) VALUES (?, ?, ?, ?)';
             createChannelQuery = mysql.format(createChannelQuery, [req.body.Name, pushSecret, req.body.SubscriptionSecret, req.body.IconUrl]);
         }
 
@@ -93,15 +93,15 @@ router.post('/', (req: any, res: express.Response) => {
         req.connection.release();
 
         if (err) {
-            res.status(500).json({ 'Error': err }).end();
+            res.status(500).json({ 'Error': 'Unknown database error' }).end();
             return;
         }
         if (result.affectedRows === 0) {
-            res.status(400).json({ 'Error': 'Unable to create channel.' }).end();
+            res.status(400).json({ 'Error': 'Unable to create channel' }).end();
             return;
         }
 
-        res.status(201).json({ 'Message': 'Channel created' }).end();
+        res.status(201).json({ 'Message': 'Channel created.' }).end();
         return;
     });
 });
