@@ -19,7 +19,7 @@ app.use('/subscriptions', subscriptionEndpoints);
 
 app.use(require('body-parser').json());
 
-webpush.setVapidDetails('mailto:info@notifications.studio-4711.com', appConfig.publicVapidKey, appConfig.privateVapidKey);
+webpush.setVapidDetails('mailto:PIPELINE_INSERT_VAPIDCONTACTINFO', appConfig.publicVapidKey, appConfig.privateVapidKey);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
