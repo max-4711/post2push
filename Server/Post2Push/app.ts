@@ -21,7 +21,7 @@ app.use(require('body-parser').json());
 
 console.log("Setting up vapid...");
 const appConfig = new AppConfiguration();
-webpush.setVapidDetails(appConfig.vapidContactInfo, appConfig.publicVapidKey, appConfig.privateVapidKey);
+//webpush.setVapidDetails(appConfig.vapidContactInfo, appConfig.publicVapidKey, appConfig.privateVapidKey);
 
 // catch 404 and forward to error handler
 console.log("Configuring error handlers...");
