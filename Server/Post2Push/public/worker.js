@@ -11,6 +11,6 @@ self.addEventListener('push', ev => {
         });
     }
     else {
-        self.registration.showNotification(data.title, { body: data.body }
+        self.registration.showNotification(data.title, { body: data.body });
     }
 });
