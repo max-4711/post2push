@@ -7,7 +7,7 @@
  * da weitere Verarbeitung der Anfrage sinnlos wäre
  */
 
-var db = require('../db/db.init');
+import db = require('./db.init');
 
 var getDbConnection = function (req, res, next) {
 

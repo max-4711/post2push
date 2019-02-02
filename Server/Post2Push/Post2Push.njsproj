@@ -50,14 +50,16 @@
     <TypeScriptCompile Include="middleware\getDbConnection.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="routes\delete.ts">
+    <TypeScriptCompile Include="routes\channels.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="routes\get.ts" />
-    <TypeScriptCompile Include="routes\post.ts" />
     <Content Include="tsconfig.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <TypeScriptCompile Include="routes\subscriptions.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="config\" />

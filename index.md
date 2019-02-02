@@ -1,21 +1,19 @@
 ##Routen:
+###POST /subscriptions
+-> Channel-Name, ggfs. Channel-Subscription-Secret, Push-Provider-Token, Subscription-Anzeigename (optional)
+<- Subscription-Token
 
-###POST /create 
+###DELETE /subscriptions/<Token>
+-> Subscription-Token
+
+###POST /channels 
 -> gewünschter Channel-Name, Channel-Creation-Secret, gewünschtes Channel-Subscription-Secret (optional)
-<- Channel-Name, Channel-Push-Secret und ggfs. Channel-Subscription-Secret
 
-###POST /subscribe
--> Channel-Name, ggfs. Channel-Subscription-Secret, Push-Token?, ???
-<- Subscription-Token, ggfs. Channel-Subscription-Secret
-
-###DELETE /subscription
--> Channel-Name, Subscription-Token
-
-###POST /push
+###POST /channels/<name>/push
 -> Channel-Name, Channel-Push-Secret, Nachricht
 <- Anzahl Empfänger?
 
-###DELETE /channel
+###DELETE /channels/<name>
 -> Channel-Name, Channel-Push-Secret
 
 

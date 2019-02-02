@@ -1,0 +1,134 @@
+﻿/*
+ * /subscriptions/...
+ */
+import express = require('express');
+import TokenGenerator = require('../helpers/tokengenerator');
+import AppConfiguration = require('../config/app.config');
+
+const mysql = require('mysql');
+const tokenGenerator = new TokenGenerator();
+const router = express.Router();
+
+const middleware = {
+    getDbConnection: require('../middleware/getDbConnection')
+};
+router.use(middleware.getDbConnection);
+
+router.delete('/', (req: any, res: express.Response) => {
+    res.status(405).json({ 'Error': 'DELETE not allowed.' }).end();
+    return;
+});
+
+router.get('/', (req: any, res: express.Response) => {
+    res.status(405).json({ 'Error': 'GET not allowed.' }).end();
+    return;
+});
+
+router.post('/', (req: any, res: express.Response) => {
+    var type = req.headers['content-type'];
+
+    if (type !== 'application/json') {
+        res.status(406).json({ 'Error': 'Only type application/json supported' }).end();
+        return;
+    }
+
+    if (req.body.ChannelName === null || typeof req.body.ChannelName === 'undefined') {
+        res.status(400).json({ 'Error': 'Missing ChannelName' }).end();
+        return;
+    }
+    if (req.body.PushProviderToken === null || typeof req.body.PushProviderToken === 'undefined') {
+        res.status(400).json({ 'Error': 'Missing PushProviderToken' }).end();
+        return;
+    }
+
+    var getAffectedChannelQuery = 'SELECT subscription_secret FROM channel WHERE name = ?';
+    getAffectedChannelQuery = mysql.format(getAffectedChannelQuery, req.body.ChannelName);
+
+    req.connection.query(getAffectedChannelQuery, function (err, channelRows) {
+        if (err) {
+            req.connection.release();
+            res.status(500).json({ 'Error': 'Unknown database error' }).end();
+            return;
+        }
+
+        if (channelRows.length === 0) {
+            req.connection.release();
+            res.status(400).json({ 'Error': 'Channel not existing' }).end();
+            return;
+        }
+
+        if (channelRows[0].subscription_secret !== null && channelRows[0].subscription_secret !== '' && typeof channelRows[0].subscription_secret !== 'undefined') {
+            if (channelRows[0].subscription_secret !== req.body.ChannelSubscriptionSecret) {
+                res.status(401).json({ 'Error': 'Invalid ChannelSubscriptionSecret' }).end();
+                return;
+            }
+        }
+
+        let subscriptionToken = tokenGenerator.Generate(45);
+        var createSubscriptionQuery = '';
+
+        if (req.body.Name === null || typeof req.body.Name === 'undefined') {
+            createSubscriptionQuery = 'INSERT INTO subscription (token, channel_name, push_token) VALUES (?,?,?)'
+            mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, req.body.PushProviderToken]);
+        }
+        else {
+            createSubscriptionQuery = 'INSERT INTO subscription (token, channel_name, name, push_token) VALUES (?,?,?,?)'
+            mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, req.body.Name, req.body.PushProviderToken]);
+        }
+
+        req.connection.query(createSubscriptionQuery, function (err, result) {
+            req.connection.release();
+
+            if (err) {
+
+                res.status(500).json({ 'Error': 'Unknown database error' }).end();
+                return;
+            }
+            if (result.affectedRows === 0) {
+                res.status(400).json({ 'Error': 'Unable to create subscription.' }).end();
+                return;
+            }
+
+            res.status(201).json({ 'Message': 'Subscription created' }).end();
+            return;
+        });
+    });
+});
+
+router.post('/:token', (req: any, res: express.Response) => {
+    res.status(501).json({ 'Error': 'POST not allowed.' }).end();
+    return;
+});
+
+router.get('/:token', (req: any, res: express.Response) => {
+    res.status(405).json({ 'Error': 'GET not allowed.' }).end();
+    return;
+});
+
+router.delete('/:token', (req: any, res: express.Response) => {
+    if (req.params.token === null || typeof req.params.token === 'undefined') {
+        res.status(400).json({ 'Error': 'Missing subscription token' }).end();
+        return;
+    }
+
+    var query = 'DELETE FROM subscription WHERE token = ?';
+    query = mysql.format(query, req.params.token);
+
+    req.connection.query(query, function (err, result) {
+        req.connection.release();
+
+        if (err) {
+            res.status(500).json({ 'Error': 'Unknown database error' }).end();
+            return;
+        }
+
+        if (result.affectedRows === 0) {
+            res.status(410).json({ 'Error': 'Unable to delete subscription, because it is already deleted' });
+            return;
+        }
+
+        res.status(200).json({ 'Message': 'Subscription successfully deleted.' });
+    });
+});
+
+export default router;

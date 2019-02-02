@@ -2,17 +2,17 @@
 import express = require('express');
 import path = require('path');
 
-import getEndpoints from './routes/get';
-import postEndpoints from './routes/post';
-import deleteEndpoints from './routes/delete';
+import baseEndpoints from './routes/get';
+import channelEndpoints from './routes/channels';
+import subscriptionEndpoints from './routes/subscriptions';
 
 var app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', getEndpoints);
-app.use('/', postEndpoints);
-app.use('/', deleteEndpoints);
+app.use('/', baseEndpoints);
+app.use('/channels', channelEndpoints);
+app.use('/subscriptions', subscriptionEndpoints);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

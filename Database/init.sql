@@ -10,6 +10,7 @@ CREATE TABLE `channel`
 CREATE TABLE `subscription` 
     ( `token`               CHAR(45)        NOT NULL COMMENT 'Einzigartiges Subscription-Token',
       `channel_name`        VARCHAR(100)    NOT NULL COMMENT 'Channe-Name, auf den sich diese Subscription bezieht',
+      `name`                VARCHAR(100)    NULL COMMENT 'Optionaler Anzeigename dieser Subscription',
       `push_token`          TEXT            NOT NULL COMMENT 'Token für GCM/Firebase oder Whatever, um Push-Benachrichtigungen an einen Client zu senden',
       `creation_timestamp`  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Zeitpunkt, an dem diese Subscription erstellt wurde', 
       PRIMARY KEY (`token`)
