@@ -90,7 +90,7 @@ router.post('/', (req: any, res: express.Response) => {
                 return;
             }
 
-            res.status(201).json({ 'Message': 'Subscription created' }).end();
+            res.status(201).json({ 'Message': 'Subscription created', 'SubscriptionToken': subscriptionToken }).end();
 
             var payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert.' });
             webpush.sendNotification(req.body.DeliveryDetails, payload).catch(error => {

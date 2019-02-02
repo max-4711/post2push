@@ -51,16 +51,42 @@ router.post('/', (req: any, res: express.Response) => {
 
     var createChannelQuery = '';
     if (req.body.SubscriptionSecret === null || typeof req.body.SubscriptionSecret === 'undefined') {
-        createChannelQuery = 'INSERT INTO channel (name, push_secret) VALUES (?,?)';
-        createChannelQuery = mysql.format(createChannelQuery, [req.body.Name, pushSecret]);
+
+        if (req.body.IconUrl === null || typeof req.body.IconUrl === 'undefined') {
+            createChannelQuery = 'INSERT INTO channel (name, push_secret) VALUES (?,?)';
+            createChannelQuery = mysql.format(createChannelQuery, [req.body.Name, pushSecret]);
+        }
+        else {
+            if (req.body.IconUrl.length > 100) {
+                res.status(400).json({ 'Error': 'Maximum supported length for icon URLs is 100 characters' }).end();
+                return;
+            }
+
+            createChannelQuery = 'INSERT INTO channel (name, push_secret, icon_url) VALUES (?,?,?)';
+            createChannelQuery = mysql.format(createChannelQuery, [req.body.Name, pushSecret, req.body.IconUrl]);
+        }
+
     }
     else {
         if (req.body.SubscriptionSecret.length > 40) {
             res.status(400).json({ 'Error': 'Maximum supported length for subscription secret is 40 characters' }).end();
             return;
         }
-        createChannelQuery = 'INSERT INTO channel (name, push_secret, subscription_secret) VALUES (?, ?, ?)';
-        createChannelQuery = mysql.format(createChannelQuery, [req.body.Name, pushSecret, req.body.SubscriptionSecret]);
+
+        if (req.body.IconUrl === null || typeof req.body.IconUrl === 'undefined') {
+            createChannelQuery = 'INSERT INTO channel (name, push_secret, subscription_secret) VALUES (?, ?, ?)';
+            createChannelQuery = mysql.format(createChannelQuery, [req.body.Name, pushSecret, req.body.SubscriptionSecret]);
+        }
+        else {
+            if (req.body.IconUrl.length > 100) {
+                res.status(400).json({ 'Error': 'Maximum supported length for icon URLs is 100 characters' }).end();
+                return;
+            }
+
+            createChannelQuery = 'INSERT INTO channel (name, push_secret, subscription_secret) VALUES (?, ?, ?, ?)';
+            createChannelQuery = mysql.format(createChannelQuery, [req.body.Name, pushSecret, req.body.SubscriptionSecret, req.body.IconUrl]);
+        }
+
     }
 
     req.connection.query(createChannelQuery, function (err, result) {
@@ -105,7 +131,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
         return;
     }
 
-    var getAffectedChannelQuery = 'SELECT name, push_secret FROM channel WHERE name = ?';
+    var getAffectedChannelQuery = 'SELECT name, push_secret, icon_url FROM channel WHERE name = ?';
     getAffectedChannelQuery = mysql.format(getAffectedChannelQuery, req.params.name);
 
     req.connection.query(getAffectedChannelQuery, function (err, channelRows) {
@@ -157,7 +183,13 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                     return;
                 }
 
-                var payload = JSON.stringify({ title: req.body.MessageTitle, body: req.body.MessageContent });
+                var payload;
+                if (channelRows[0].icon_url === null || typeof channelRows[0].icon_url === 'undefined') {
+                    payload = JSON.stringify({ title: req.body.MessageTitle, body: req.body.MessageContent });
+                }
+                else {
+                    payload = JSON.stringify({ title: req.body.MessageTitle, body: req.body.MessageContent, icon: channelRows[0].icon_url });
+                }
 
                 var errorsCounter = 0;
                 var index;
