@@ -49,11 +49,21 @@ steps:
 - task: DeleteFiles@1
   displayName: 'delete ts source'
   inputs:
-    contents: '**\*.ts'
+    contents: '**/*.ts'
+
+- task: DeleteFiles@1
+  displayName: 'delete js map'
+  inputs:
+    contents: '**/*.js.map'
+
+- task: DeleteFiles@1
+  displayName: 'delete markdown'
+  inputs:
+    contents: '**/*.md'
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/Server/Post2Push'
     includeRootFolder: false
 
 - task: PublishBuildArtifacts@1
