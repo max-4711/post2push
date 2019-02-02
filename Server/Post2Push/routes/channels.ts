@@ -4,6 +4,7 @@
 import express = require('express');
 import TokenGenerator = require('../helpers/tokengenerator');
 import AppConfiguration = require('../config/app.config');
+import webpush = require('web-push');
 
 const mysql = require('mysql');
 const tokenGenerator = new TokenGenerator();

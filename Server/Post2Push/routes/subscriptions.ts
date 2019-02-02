@@ -4,6 +4,7 @@
 import express = require('express');
 import TokenGenerator = require('../helpers/tokengenerator');
 import AppConfiguration = require('../config/app.config');
+import webpush = require('web-push');
 
 const mysql = require('mysql');
 const tokenGenerator = new TokenGenerator();
@@ -36,8 +37,8 @@ router.post('/', (req: any, res: express.Response) => {
         res.status(400).json({ 'Error': 'Missing ChannelName' }).end();
         return;
     }
-    if (req.body.PushProviderToken === null || typeof req.body.PushProviderToken === 'undefined') {
-        res.status(400).json({ 'Error': 'Missing PushProviderToken' }).end();
+    if (req.body.DeliveryDetails === null || typeof req.body.DeliveryDetails === 'undefined') {
+        res.status(400).json({ 'Error': 'Missing DeliveryDetails' }).end();
         return;
     }
 
@@ -68,12 +69,12 @@ router.post('/', (req: any, res: express.Response) => {
         var createSubscriptionQuery = '';
 
         if (req.body.Name === null || typeof req.body.Name === 'undefined') {
-            createSubscriptionQuery = 'INSERT INTO subscription (token, channel_name, push_token) VALUES (?,?,?)'
-            mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, req.body.PushProviderToken]);
+            createSubscriptionQuery = 'INSERT INTO subscription (token, channel_name, delivery_details) VALUES (?,?,?)'
+            mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, JSON.stringify(req.body.DeliveryDetails)]);
         }
         else {
-            createSubscriptionQuery = 'INSERT INTO subscription (token, channel_name, name, push_token) VALUES (?,?,?,?)'
-            mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, req.body.Name, req.body.PushProviderToken]);
+            createSubscriptionQuery = 'INSERT INTO subscription (token, channel_name, name, delivery_details) VALUES (?,?,?,?)'
+            mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, req.body.Name, JSON.stringify(req.body.DeliveryDetails)]);
         }
 
         req.connection.query(createSubscriptionQuery, function (err, result) {
@@ -90,7 +91,11 @@ router.post('/', (req: any, res: express.Response) => {
             }
 
             res.status(201).json({ 'Message': 'Subscription created' }).end();
-            return;
+
+            var payload = JSON.stringify({ title: 'Pling!' });
+            webpush.sendNotification(req.body.DeliveryDetails, payload).catch(error => {
+                console.error('Error while sending push notification: ' + error.stack);
+            })
         });
     });
 });
