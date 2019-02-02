@@ -49,7 +49,7 @@ steps:
 - task: DeleteFiles@1
   displayName: 'delete non-deployment files'
   inputs:
-    contents: 'Server/Post2Push/*.ts;' #Server/Post2Push/**/*.ts;Server/Post2Push/*.js.map;Server/**/*.js.map;Server/Post2Push/README.md;-Server/Post2Push/node_modules'
+    contents: './Server/Post2Push/*.ts;' #Server/Post2Push/**/*.ts;Server/Post2Push/*.js.map;Server/**/*.js.map;Server/Post2Push/README.md;-Server/Post2Push/node_modules'
 
 - bash: sed -i -e 's/PIPELINE_INSERT_CHANNELCREATIONSECRET/$(deployment.channelCreationSecret)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PUBLICVAPIDKEY/$(deployment.vapidPublicKey)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PRIVATEVAPIDKEY/$(deployment.vapidPrivateKey)/g' app.config.js
   displayName: 'Prepare app.config for deployment'
