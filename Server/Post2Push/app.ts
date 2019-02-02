@@ -50,7 +50,7 @@ app.use((err: any, req, res, next) => {
 });
 
 
-var port = 3000;
+var port = 60000;
 if (process.env.PORT !== null && typeof process.env.PORT !== 'undefined') {
     port = +process.env.PORT;
     console.log("Using port " + port + " configured in environment variable 'PORT'.");
