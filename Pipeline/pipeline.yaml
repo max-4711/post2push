@@ -52,15 +52,15 @@ steps:
 #     contents: './Server/Post2Push/*.ts;' #Server/Post2Push/**/*.ts;Server/Post2Push/*.js.map;Server/**/*.js.map;Server/Post2Push/README.md;-Server/Post2Push/node_modules'
 
 #-o -name "*.js.map" -o -name ".md" 
-- bash: find ./ -maxdepth 2 -type f -name "*.ts" -delete
+- bash: sudo find ./ -maxdepth 2 -type f -name "*.ts" -delete
   displayName: 'delete typescript sources'
   workingDirectory: Server/Post2Push
 
-- bash: find ./ -maxdepth 2 -type f -name "*.js.map" -delete
+- bash: sudo find ./ -maxdepth 2 -type f -name "*.js.map" -delete
   displayName: 'delete js map files'
   workingDirectory: Server/Post2Push
 
-- bash: find ./ -maxdepth 5 -type f -name "*.md" -delete
+- bash: sudo find ./ -maxdepth 5 -type f -name "*.md" -delete
   displayName: 'delete markdown files'
   workingDirectory: Server/Post2Push
 
