@@ -23,7 +23,7 @@ var getDbConnection = function (req, res, next) {
 
         // Verbidung erfolgreich hergestellt
         else {
-            req.dBconnection = connection;
+            req.connection = connection;
             next();
         }
 
