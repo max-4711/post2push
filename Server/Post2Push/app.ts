@@ -8,20 +8,23 @@ import baseEndpoints from './routes/get';
 import channelEndpoints from './routes/channels';
 import subscriptionEndpoints from './routes/subscriptions';
 
+console.log("Initialiting express...");
 var app = express();
-const appConfig = new AppConfiguration();
-
 app.use(express.static(path.join(__dirname, 'public')));
 
+console.log("Configuring routes...");
 app.use('/', baseEndpoints);
 app.use('/channels', channelEndpoints);
 app.use('/subscriptions', subscriptionEndpoints);
 
 app.use(require('body-parser').json());
 
+console.log("Setting up vapid...");
+const appConfig = new AppConfiguration();
 webpush.setVapidDetails(appConfig.vapidContactInfo, appConfig.publicVapidKey, appConfig.privateVapidKey);
 
 // catch 404 and forward to error handler
+console.log("Configuring error handlers...");
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err['status'] = 404;
@@ -48,6 +51,9 @@ app.use((err: any, req, res, next) => {
 
 app.set('port', process.env.PORT || 3000);
 
+console.log("Listening on port " + process.env.PORT || 3000);
+
 var server = app.listen(app.get('port'), function () {
     debug('Express server listening on port ' + server.address().port);
+    console.log("Startup complete.");
 });
