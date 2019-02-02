@@ -21,12 +21,12 @@ app.use(require('body-parser').json());
 
 console.log("Setting up vapid...");
 const appConfig = new AppConfiguration();
-webpush.setVapidDetails(appConfig.vapidContactInfo, appConfig.publicVapidKey, appConfig.privateVapidKey);
+//webpush.setVapidDetails(appConfig.vapidContactInfo, appConfig.publicVapidKey, appConfig.privateVapidKey);
 
 // catch 404 and forward to error handler
 console.log("Configuring error handlers...");
 app.use(function (req, res, next) {
-    var err = new Error('Not Found');
+    var err = new Error('Route ' + req.path + ' / ' + req.originalUrl + ' not existing.');
     err['status'] = 404;
     next(err);
 });
@@ -35,23 +35,12 @@ app.use(function (req, res, next) {
 if (app.get('env') === 'development') {
     app.use((err: any, req, res, next) => {
         res.status(err['status'] || 500).json({ 'Error': err.message }).end();
-        //res.status(400).send('error', {
-        //    message: err.message,
-        //    error: err
-        //});
-        //res.status(err['status'] || 500).send('error', {
-        //    message: err.message,
-        //    error: err
-        //});
     });
 }
 
 // production error handler: no stacktraces leaked to user
 app.use((err: any, req, res, next) => {
-    res.status(err.status || 500).send('error', {
-        message: err.message,
-        error: {}
-    });
+    res.status(err.status || 500).json({ 'Error': err.message }).end();;
 });
 
 
