@@ -9,6 +9,7 @@ import webpush = require('web-push');
 const mysql = require('mysql');
 const tokenGenerator = new TokenGenerator();
 const router = express.Router();
+const appConfig = new AppConfiguration();
 
 const middleware = {
     getDbConnection: require('../middleware/getDbConnection')
@@ -47,6 +48,8 @@ router.post('/', (req: any, res: express.Response) => {
     var getSubcriptionClonesQuery = 'SELECT token, name FROM subscription WHERE channel_name = ? AND delivery_details = ?';
     getSubcriptionClonesQuery = mysql.format(getSubcriptionClonesQuery, [req.body.ChannelName, deliveryDetailsStringified]);
 
+    const iconurl = appConfig.applicationUrl + '/public/success.png'
+
     req.connection.query(getSubcriptionClonesQuery, function (err, subscriptionRows) {
         if (err) {
             req.connection.release();
@@ -58,7 +61,7 @@ router.post('/', (req: any, res: express.Response) => {
             req.connection.release();
             res.status(200).json({ 'Message': 'Subscription already present!', 'SubscriptionToken': subscriptionRows[0].token }).end();
 
-            var payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert. Wirklich.' });
+            var payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert. Wirklich.', icon: iconurl });
             webpush.sendNotification(req.body.DeliveryDetails, payload).catch(error => {
                 console.error('Error while sending push notification: ' + error.stack);
             })
@@ -114,7 +117,7 @@ router.post('/', (req: any, res: express.Response) => {
 
                 res.status(201).json({ 'Message': 'Subscription created', 'SubscriptionToken': subscriptionToken }).end();
 
-                var payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert.' });
+                var payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert.', icon: iconurl });
                 webpush.sendNotification(req.body.DeliveryDetails, payload).catch(error => {
                     console.error('Error while sending push notification: ' + error.stack);
                 })

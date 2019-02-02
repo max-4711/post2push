@@ -58,7 +58,7 @@ steps:
   displayName: 'delete markdown files'
   workingDirectory: Server/Post2Push
 
-- bash: sed -i -e 's/PIPELINE_INSERT_CHANNELCREATIONSECRET/$(deployment.channelCreationSecret)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PUBLICVAPIDKEY/$(deployment.vapidPublicKey)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PRIVATEVAPIDKEY/$(deployment.vapidPrivateKey)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_VAPIDCONTACTINFO/$(deployment.vapidContactInfo)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_BASEROUTE/$(deployment.baseRoute)/g' app.config.js
+- bash: sed -i -e 's/PIPELINE_INSERT_CHANNELCREATIONSECRET/$(deployment.channelCreationSecret)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PUBLICVAPIDKEY/$(deployment.vapidPublicKey)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PRIVATEVAPIDKEY/$(deployment.vapidPrivateKey)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_VAPIDCONTACTINFO/$(deployment.vapidContactInfo)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_BASEROUTE/$(deployment.baseRoute)/g' app.config.js && sed -i -e 's#PIPELINE_INSERT_APP_URL#$(deployment.appUrl)#g' app.config.js
   displayName: 'Prepare app.config for deployment'
   workingDirectory: Server/Post2Push/config
 
