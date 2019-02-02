@@ -5,6 +5,6 @@ self.addEventListener('push', ev => {
     console.log('Got push', data);
     self.registration.showNotification(data.title, {
         body: 'Benachrichtigungen aktiviert.',
-        icon: 'https://PIPELINE_INSERT_DOMAINNAME/public/success.png'
+        icon: 'https://PIPELINE_INSERT_APP_URL/public/success.png'
     });
 });

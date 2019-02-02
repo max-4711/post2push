@@ -46,12 +46,6 @@ steps:
     summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
     reportDirectory: '$(System.DefaultWorkingDirectory)/**/coverage'
 
-# - task: DeleteFiles@1
-#   displayName: 'delete non-deployment files'
-#   inputs:
-#     contents: './Server/Post2Push/*.ts;' #Server/Post2Push/**/*.ts;Server/Post2Push/*.js.map;Server/**/*.js.map;Server/Post2Push/README.md;-Server/Post2Push/node_modules'
-
-#-o -name "*.js.map" -o -name ".md" 
 - bash: sudo find ./ -maxdepth 2 -type f -name "*.ts" -delete
   displayName: 'delete typescript sources'
   workingDirectory: Server/Post2Push
@@ -64,7 +58,7 @@ steps:
   displayName: 'delete markdown files'
   workingDirectory: Server/Post2Push
 
-- bash: sed -i -e 's/PIPELINE_INSERT_CHANNELCREATIONSECRET/$(deployment.channelCreationSecret)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PUBLICVAPIDKEY/$(deployment.vapidPublicKey)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PRIVATEVAPIDKEY/$(deployment.vapidPrivateKey)/g' app.config.js
+- bash: sed -i -e 's/PIPELINE_INSERT_CHANNELCREATIONSECRET/$(deployment.channelCreationSecret)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PUBLICVAPIDKEY/$(deployment.vapidPublicKey)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PRIVATEVAPIDKEY/$(deployment.vapidPrivateKey)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_VAPIDCONTACTINFO/$(deployment.vapidContactInfo)/g' app.config.js
   displayName: 'Prepare app.config for deployment'
   workingDirectory: Server/Post2Push/config
 
@@ -72,11 +66,7 @@ steps:
   displayName: 'Prepare db.config for deployment'
   workingDirectory: Server/Post2Push/config
 
-- bash: sed -i -e 's/PIPELINE_INSERT_VAPIDCONTACTINFO/$(deployment.vapidContactInfo)/g' app.js
-  displayName: 'Prepare core app for deployment'
-  workingDirectory: Server/Post2Push
-
-- bash: sed -i -e 's/PIPELINE_INSERT_PUBLICVAPIDKEY/$(deployment.vapidPublicKey)/g' client.js && sed -i -e 's#PIPELINE_INSERT_DOMAINNAME#$(deployment.domainName)#g' worker.js
+- bash: sed -i -e 's/PIPELINE_INSERT_PUBLICVAPIDKEY/$(deployment.vapidPublicKey)/g' client.js && sed -i -e 's#PIPELINE_INSERT_APP_URL#$(deployment.appUrl)#g' worker.js && sed -i -e 's#PIPELINE_INSERT_APP_URL#$(deployment.appUrl)#g' test.html
   displayName: 'Prepare client-side javascript for deployment'
   workingDirectory: Server/Post2Push/public
 
