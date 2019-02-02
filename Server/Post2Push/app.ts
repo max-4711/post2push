@@ -12,6 +12,8 @@ const appConfig = new AppConfiguration();
 
 console.log("Initializing express...");
 var app = express();
+app.use(require('body-parser').json());
+app.use(app.router);
 app.use(appConfig.baseRoute + '/public', express.static(path.join(__dirname, 'public')));
 
 console.log("Configuring routes...");
@@ -19,10 +21,8 @@ app.use(appConfig.baseRoute + '/', baseEndpoints);
 app.use(appConfig.baseRoute + '/channels', channelEndpoints);
 app.use(appConfig.baseRoute + '/subscriptions', subscriptionEndpoints);
 
-app.use(require('body-parser').json());
-
 console.log("Setting up vapid...");
-//webpush.setVapidDetails(appConfig.vapidContactInfo, appConfig.publicVapidKey, appConfig.privateVapidKey);
+webpush.setVapidDetails(appConfig.vapidContactInfo, appConfig.publicVapidKey, appConfig.privateVapidKey);
 
 // catch 404 and forward to error handler
 console.log("Configuring error handlers...");
