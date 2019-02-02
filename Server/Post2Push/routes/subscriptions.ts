@@ -42,60 +42,83 @@ router.post('/', (req: any, res: express.Response) => {
         return;
     }
 
-    var getAffectedChannelQuery = 'SELECT name, subscription_secret FROM channel WHERE name = ?';
-    getAffectedChannelQuery = mysql.format(getAffectedChannelQuery, req.body.ChannelName);
+    var deliveryDetailsStringified = JSON.stringify(req.body.DeliveryDetails);
 
-    req.connection.query(getAffectedChannelQuery, function (err, channelRows) {
+    var getSubcriptionClonesQuery = 'SELECT token, name FROM subscription WHERE channel_name = ? AND delivery_details = ?';
+    getSubcriptionClonesQuery = mysql.format(getSubcriptionClonesQuery, [req.body.ChannelName, deliveryDetailsStringified]);
+
+    req.connection.query(getSubcriptionClonesQuery, function (err, subscriptionRows) {
         if (err) {
             req.connection.release();
             res.status(500).json({ 'Error': 'Unknown database error' }).end();
             return;
         }
 
-        if (channelRows.length === 0) {
+        if (subscriptionRows.length !== 0) {
             req.connection.release();
-            res.status(400).json({ 'Error': 'Channel not existing' }).end();
-            return;
-        }
+            res.status(200).json({ 'Message': 'Subscription already present!', 'SubscriptionToken': subscriptionRows[0].token }).end();
 
-        if (channelRows[0].subscription_secret !== null && channelRows[0].subscription_secret !== '' && typeof channelRows[0].subscription_secret !== 'undefined') {
-            if (channelRows[0].subscription_secret !== req.body.ChannelSubscriptionSecret) {
-                res.status(401).json({ 'Error': 'Invalid ChannelSubscriptionSecret' }).end();
-                return;
-            }
-        }
-
-        let subscriptionToken = tokenGenerator.Generate(45);
-        var createSubscriptionQuery = '';
-        var deliveryDetailsStringified = JSON.stringify(req.body.DeliveryDetails);
-
-        if (req.body.Name === null || typeof req.body.Name === 'undefined') {
-            createSubscriptionQuery = "INSERT INTO subscription (token, channel_name, delivery_details) VALUES (?, ?, ?)";
-            createSubscriptionQuery = mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, deliveryDetailsStringified]);
-        }
-        else {
-            createSubscriptionQuery = 'INSERT INTO subscription (token, channel_name, name, delivery_details) VALUES (?, ?, ?, ?)';
-            createSubscriptionQuery = mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, req.body.Name, deliveryDetailsStringified]);
-        }
-
-        var query = req.connection.query(createSubscriptionQuery, function (err, result) {
-            req.connection.release();
-
-            if (err) {
-                res.status(500).json({ 'Error': 'Unknown database error' }).end(); // + ' // ' + createSubscriptionQuery + ' // ' + req.body.ChannelName + ' // ' + deliveryDetailsStringified }).end();
-                return;
-            }
-            if (result.affectedRows === 0) {
-                res.status(400).json({ 'Error': 'Unable to create subscription' }).end();
-                return;
-            }
-
-            res.status(201).json({ 'Message': 'Subscription created', 'SubscriptionToken': subscriptionToken }).end();
-
-            var payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert.' });
+            var payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert. Wirklich.' });
             webpush.sendNotification(req.body.DeliveryDetails, payload).catch(error => {
                 console.error('Error while sending push notification: ' + error.stack);
             })
+            return;
+        }
+
+        var getAffectedChannelQuery = 'SELECT name, subscription_secret FROM channel WHERE name = ?';
+        getAffectedChannelQuery = mysql.format(getAffectedChannelQuery, req.body.ChannelName);
+
+        req.connection.query(getAffectedChannelQuery, function (err, channelRows) {
+            if (err) {
+                req.connection.release();
+                res.status(500).json({ 'Error': 'Unknown database error' }).end();
+                return;
+            }
+
+            if (channelRows.length === 0) {
+                req.connection.release();
+                res.status(400).json({ 'Error': 'Channel not existing' }).end();
+                return;
+            }
+
+            if (channelRows[0].subscription_secret !== null && channelRows[0].subscription_secret !== '' && typeof channelRows[0].subscription_secret !== 'undefined') {
+                if (channelRows[0].subscription_secret !== req.body.ChannelSubscriptionSecret) {
+                    res.status(401).json({ 'Error': 'Invalid ChannelSubscriptionSecret' }).end();
+                    return;
+                }
+            }
+
+            let subscriptionToken = tokenGenerator.Generate(45);
+            var createSubscriptionQuery = '';        
+
+            if (req.body.Name === null || typeof req.body.Name === 'undefined') {
+                createSubscriptionQuery = "INSERT INTO subscription (token, channel_name, delivery_details) VALUES (?, ?, ?)";
+                createSubscriptionQuery = mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, deliveryDetailsStringified]);
+            }
+            else {
+                createSubscriptionQuery = 'INSERT INTO subscription (token, channel_name, name, delivery_details) VALUES (?, ?, ?, ?)';
+                createSubscriptionQuery = mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, req.body.Name, deliveryDetailsStringified]);
+            }
+
+            var query = req.connection.query(createSubscriptionQuery, function (err, result) {
+                req.connection.release();
+
+                if (err) {
+                    res.status(500).json({ 'Error': 'Unknown database error' }).end();
+                    return;
+                }
+                if (result.affectedRows === 0) {
+                    res.status(400).json({ 'Error': 'Unable to create subscription' }).end();
+                    return;
+                }
+
+                res.status(201).json({ 'Message': 'Subscription created', 'SubscriptionToken': subscriptionToken }).end();
+
+                var payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert.' });
+                webpush.sendNotification(req.body.DeliveryDetails, payload).catch(error => {
+                    console.error('Error while sending push notification: ' + error.stack);
+                })
+            });
         });
     });
 });
