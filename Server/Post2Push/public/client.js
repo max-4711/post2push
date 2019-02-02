@@ -9,7 +9,7 @@ if ('serviceWorker' in navigator) {
 async function run() {
     console.log('Registering service worker');
     const registration = await navigator.serviceWorker.
-        register('https://PIPELINE_INSERT_APP_URL/public/worker.js', { scope: '/' });
+        register('https://PIPELINE_INSERT_APP_URL/public/worker.js', { scope: '/post2push/public/' });
     console.log('Registered service worker');
 
     console.log('Registering push');
