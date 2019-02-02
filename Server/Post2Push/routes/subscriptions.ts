@@ -48,7 +48,7 @@ router.post('/', (req: any, res: express.Response) => {
     var getSubcriptionClonesQuery = 'SELECT token, name FROM subscription WHERE channel_name = ? AND delivery_details = ?';
     getSubcriptionClonesQuery = mysql.format(getSubcriptionClonesQuery, [req.body.ChannelName, deliveryDetailsStringified]);
 
-    const iconurl = appConfig.applicationUrl + '/public/success.png'
+    const iconurl = 'https://' + appConfig.applicationUrl + '/public/success.png'
 
     req.connection.query(getSubcriptionClonesQuery, function (err, subscriptionRows) {
         if (err) {
