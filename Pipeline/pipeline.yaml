@@ -84,5 +84,7 @@ steps:
   inputs:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/Server/Post2Push'
     includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/deploy.zip'
 
 - task: PublishBuildArtifacts@1
