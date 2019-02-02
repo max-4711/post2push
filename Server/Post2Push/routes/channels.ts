@@ -93,7 +93,7 @@ router.post('/', (req: any, res: express.Response) => {
         req.connection.release();
 
         if (err) {
-            res.status(500).json({ 'Error': 'Unknown database error' }).end();
+            res.status(500).json({ 'Error': err }).end();
             return;
         }
         if (result.affectedRows === 0) {

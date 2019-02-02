@@ -15,10 +15,7 @@ var getDbConnection = function (req, res, next) {
 
         // Verbindung konnte nicht hergestellt werden -> Anfrage beenden
         if (err) {
-            var error = {
-                message: 'Verbindung zur Datenbank fehlgeschlagen!'
-            };
-            return res.status(500).json(error);
+            return res.status(500).json({ 'Error': 'Unable to establish a connection to the database!' });
         }
 
         // Verbidung erfolgreich hergestellt
