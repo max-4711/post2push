@@ -3,8 +3,14 @@
 self.addEventListener('push', ev => {
     const data = ev.data.json();
     console.log('Got push', data);
-    self.registration.showNotification(data.title, {
-        body: 'Benachrichtigungen aktiviert.',
-        icon: 'https://PIPELINE_INSERT_APP_URL/public/success.png'
-    });
+
+    if (data.icon !== null && typeof data.icon !== 'undefined') {
+        self.registration.showNotification(data.title, {
+            body: data.body,
+            icon: data.icon
+        });
+    }
+    else {
+        self.registration.showNotification(data.title, { body: data.body }
+    }
 });
