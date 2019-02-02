@@ -3,6 +3,9 @@
 
 #JS-Dateien werden ja aus Typescript kompiliert und nicht selbst geschrieben!
 *.js
+#Ausnahme: Im static-Ordner und im Dialogsystem
+!**/public/*.js
+!GUI/*.js
 
 ### Node ###
 # Logs
