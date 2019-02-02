@@ -10,7 +10,7 @@ import subscriptionEndpoints from './routes/subscriptions';
 
 console.log("Initializing express...");
 var app = express();
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 console.log("Configuring routes...");
 app.use('/', baseEndpoints);
