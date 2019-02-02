@@ -1,3 +1,6 @@
+DROP TABLE `subscription`;
+DROP TABLE `channel`;
+
 CREATE TABLE `channel` 
     ( `name`                VARCHAR(100)    NOT NULL COMMENT 'Name des Channels, der ihn zugleich eindeutig identifiziert', 
       `push_secret`         CHAR(50)        NOT NULL COMMENT 'Secret, welches benötigt wird, um in diesen Channel zu pushen',

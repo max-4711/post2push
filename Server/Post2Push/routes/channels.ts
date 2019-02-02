@@ -101,7 +101,7 @@ router.post('/', (req: any, res: express.Response) => {
             return;
         }
 
-        res.status(201).json({ 'Message': 'Channel created.' }).end();
+        res.status(201).json({ 'Message': 'Channel created.', 'PushSecret': pushSecret }).end();
         return;
     });
 });
@@ -207,7 +207,6 @@ router.post('/:name/push', (req: any, res: express.Response) => {
         });
     });
 
-    res.status(501).json({ 'Error': 'Not yet implemented.' }).end();
     return;
 });
 

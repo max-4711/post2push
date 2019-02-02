@@ -67,26 +67,26 @@ router.post('/', (req: any, res: express.Response) => {
 
         let subscriptionToken = tokenGenerator.Generate(45);
         var createSubscriptionQuery = '';
+        var deliveryDetailsStringified = JSON.stringify(req.body.DeliveryDetails);
 
         if (req.body.Name === null || typeof req.body.Name === 'undefined') {
-            createSubscriptionQuery = 'INSERT INTO subscription (token, channel_name, delivery_details) VALUES (?,?,?)'
-            mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, JSON.stringify(req.body.DeliveryDetails)]);
+            createSubscriptionQuery = "INSERT INTO subscription (token, channel_name, delivery_details) VALUES (?, ?, ?)";
+            createSubscriptionQuery = mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, deliveryDetailsStringified]);
         }
         else {
-            createSubscriptionQuery = 'INSERT INTO subscription (token, channel_name, name, delivery_details) VALUES (?,?,?,?)'
-            mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, req.body.Name, JSON.stringify(req.body.DeliveryDetails)]);
+            createSubscriptionQuery = 'INSERT INTO subscription (token, channel_name, name, delivery_details) VALUES (?, ?, ?, ?)';
+            createSubscriptionQuery = mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, req.body.Name, deliveryDetailsStringified]);
         }
 
-        req.connection.query(createSubscriptionQuery, function (err, result) {
+        var query = req.connection.query(createSubscriptionQuery, function (err, result) {
             req.connection.release();
 
             if (err) {
-
-                res.status(500).json({ 'Error': 'Unknown database error' }).end();
+                res.status(500).json({ 'Error': 'Unknown database error' }).end(); // + ' // ' + createSubscriptionQuery + ' // ' + req.body.ChannelName + ' // ' + deliveryDetailsStringified }).end();
                 return;
             }
             if (result.affectedRows === 0) {
-                res.status(400).json({ 'Error': 'Unable to create subscription.' }).end();
+                res.status(400).json({ 'Error': 'Unable to create subscription' }).end();
                 return;
             }
 
