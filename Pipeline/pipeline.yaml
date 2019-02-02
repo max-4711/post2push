@@ -51,9 +51,18 @@ steps:
 #   inputs:
 #     contents: './Server/Post2Push/*.ts;' #Server/Post2Push/**/*.ts;Server/Post2Push/*.js.map;Server/**/*.js.map;Server/Post2Push/README.md;-Server/Post2Push/node_modules'
 
-- bash: find ./Post2Push/ -maxdepth 2 -type f -name "*.ts" -o -name "*.js.map" -o -name ".md" -delete
-  displayName: 'delete non-deployment files'
-  workingDirectory: Server
+#-o -name "*.js.map" -o -name ".md" 
+- bash: find ./ -maxdepth 2 -type f -name "*.ts" -delete
+  displayName: 'delete typescript sources'
+  workingDirectory: Server/Post2Push
+
+- bash: find ./ -maxdepth 2 -type f -name "*.js.map" -delete
+  displayName: 'delete js map files'
+  workingDirectory: Server/Post2Push
+
+- bash: find ./ -maxdepth 5 -type f -name "*.md" -delete
+  displayName: 'delete markdown files'
+  workingDirectory: Server/Post2Push
 
 - bash: sed -i -e 's/PIPELINE_INSERT_CHANNELCREATIONSECRET/$(deployment.channelCreationSecret)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PUBLICVAPIDKEY/$(deployment.vapidPublicKey)/g' app.config.js && sed -i -e 's/PIPELINE_INSERT_PRIVATEVAPIDKEY/$(deployment.vapidPrivateKey)/g' app.config.js
   displayName: 'Prepare app.config for deployment'
