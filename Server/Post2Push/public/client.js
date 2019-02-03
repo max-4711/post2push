@@ -48,6 +48,16 @@ async function run() {
     var channelname = document.getElementById('subscribe_channelnameinput').value;
     var subscriptionsecret = document.getElementById('subscribe_channelsubscriptionsecret').value;
 
+    if (deliveryDetails === null || typeof deliveryDetails === 'undefined') {
+        console.log('deliveryDetails not set - unable to publish endpoint!');
+        return;
+    }
+
+    if (channelname === '' || channelname === null || typeof channelname === 'undefined') {
+        alert('Please enter a channel name!');
+        return;
+    }
+
     var subscription = {
         ChannelName: channelname,
         DeliveryDetails: deliveryDetails,
@@ -95,6 +105,7 @@ async function run() {
     });
 }
 
+var deliveryDetails;
 var existingEndpointsUpdated = false;
 async function updateExistingEndpoints() {
     console.log('Registering service worker...');
@@ -102,7 +113,7 @@ async function updateExistingEndpoints() {
         register('https://PIPELINE_INSERT_APP_URL/public/worker.js', { scope: '/post2push/public/' });
 
     console.log('Registering push...');
-    var deliveryDetails = await registration.pushManager.subscribe({
+    deliveryDetails = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         // The `urlBase64ToUint8Array()` function is the same as in
         // https://www.npmjs.com/package/web-push#using-vapid-key-for-applicationserverkey
