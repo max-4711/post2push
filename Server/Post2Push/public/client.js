@@ -71,7 +71,7 @@ async function run() {
     var cookie = getCookie(cookieName);
 
     var color = "red";
-    if (cookie !== null) {
+    if (typeof cookie === 'undefined') {
         console.log('Registering push endpoint...');
 
         await fetch('https://PIPELINE_INSERT_APP_URL/subscriptions', {
