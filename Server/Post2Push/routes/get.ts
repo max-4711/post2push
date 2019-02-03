@@ -45,7 +45,7 @@ router.delete('/', (req: any, res: express.Response) => {
             return;
         }
 
-        var channelsQuery = "DELETE FROM channel WHERE last_push_timestamp < (NOW() - INTERVAL 180 DAY) AND name <> 'TestChannel'";
+        var channelsQuery = "DELETE FROM channel WHERE last_push_timestamp < (NOW() - INTERVAL 365 DAY) AND name <> 'TestChannel'";
 
         req.connection.query(channelsQuery, function (err, channelsResult) {
             req.connection.release();
