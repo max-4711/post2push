@@ -131,10 +131,15 @@ async function run() {
                     console.log('Cookie found, adding the new token to it...');
                     var oldSubscriptionTokens = JSON.parse(cookie);
 
-                    var newTokenIsAlreadyInList = (oldSubscriptionTokens.indexOf(responseJson.SubscriptionToken) > -1);
-                    if (newTokenIsAlreadyInList == false) {
-                        console.log('Token is indeed new and no duplicate subscription...');
-                        oldSubscriptionTokens.push(responseJson.SubscriptionToken);
+                    if (responseJson.SubscriptionToken !== null && typeof responseJson.SubscriptionToken !== 'undefined' && responseJson.SubscriptionToken !== '') {
+                        var newTokenIsAlreadyInList = (oldSubscriptionTokens.indexOf(responseJson.SubscriptionToken) > -1);
+                        if (!newTokenIsAlreadyInList) {
+                            console.log('Token is indeed new and no duplicate subscription...');
+                            oldSubscriptionTokens.push(responseJson.SubscriptionToken);
+                        }
+                    }
+                    else {
+                        console.log('Token is null or empty -> will not be persisted.');
                     }
                     
                     var newCookieStringified = JSON.stringify(oldSubscriptionTokens);
@@ -166,7 +171,7 @@ async function updateExistingEndpoints() {
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
     });
 
-    var cookie = getCookie(cookieName);
+    var cookie = getCookie(cookieName);    
 
     if (typeof cookie === 'undefined' || cookie === null) {
         console.log('No cookie detected -> no endpoints need to be updated.');
@@ -176,6 +181,7 @@ async function updateExistingEndpoints() {
 
     var subscriptionTokens = JSON.parse(cookie);
     console.log('Found ' + subscriptionTokens.length + ' tokens, for which endpoints will be updated...');
+    var validTokens = [];
 
     var index = 0;
     subscriptionTokens.forEach(function (subscriptionToken) {        
@@ -188,6 +194,7 @@ async function updateExistingEndpoints() {
                 existingEndpointsUpdated = true;
                 document.getElementById("subscribebutton").disabled = false;
                 document.getElementById("apiupdatespinner").style.display = 'none';
+                //Hier lieber nicht neues Cookie persistieren; bei Netzwerkproblemen könnte sonst evtl gar kein Token mehr im Cookie sein (?)
             }
 
             return;
@@ -206,6 +213,14 @@ async function updateExistingEndpoints() {
                 'content-type': 'application/json'
             }
         }).then((res) => {
+            if (res.status !== '404' && res.status !== 404) {
+                var tokenIsAlreadyInList = (validTokens.indexOf(subscriptionToken) > -1);
+                if (!tokenIsAlreadyInList) {
+                    console.log('Token ' + subscriptionToken + ' is valid and is being persisted in cookie...');
+                    validTokens.push(subscriptionToken);
+                }
+            }
+
             res.text().then((text) => {
                 console.log('Endpoint for token ' + subscriptionToken + ' updated: ' + text);
                 index++;
@@ -214,6 +229,10 @@ async function updateExistingEndpoints() {
                     existingEndpointsUpdated = true;
                     document.getElementById("subscribebutton").disabled = false;
                     document.getElementById("apiupdatespinner").style.display = 'none';
+
+                    console.log('Persisting ' + validTokens.length + ' still valid tokens in cookie...');
+                    var newCookieStringified = JSON.stringify(validTokens);
+                    setCookie(cookieName, newCookieStringified, 1825);
                 }
             });
         });
