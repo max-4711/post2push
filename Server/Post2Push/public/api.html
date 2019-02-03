@@ -10,7 +10,7 @@
     <h2 id="get-">GET /</h2>
     <p><strong>Description:</strong> Can be used as indicator for availability of the post2push service.</p>
     <h2 id="delete-">DELETE /</h2>
-    <p><strong>Description:</strong> Initiates a cleanup mechanism: Channels not used for at least 180 days and their subscribers will be purged from the database.</p>
+    <p><strong>Description:</strong> Initiates a cleanup mechanism: Subscriptions with delivery details not updated for 3 years and channels not used for at least 365 days (and their subscriptions) will be purged from the database.</p>
     <p><strong>Parameters:</strong></p>
     <ul>
         <li>ChannelCreationSecret: Secret configured in app.config.js in order to prove to be authorized to delete channels.</li>
@@ -104,6 +104,28 @@
     <ul>
         <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
         <li>Message (if applicable): Confirmation subscription has been deleted.</li>
+    </ul>
+    <h2 id="put-subscriptions-token">PUT /subscriptions/:token</h2>
+    <p><strong>Description:</strong> Updates the delivery details of a subscription.</p>
+    <p><strong>Parameters:</strong></p>
+    <ul>
+        <li>token (in route): Token identifying the subscription</li>
+        <li>
+            DeliveryDetails: Object containing updated information about VAPID push notification delivery<ul>
+                <li>endpoint</li>
+                <li>
+                    keys<ul>
+                        <li>auth</li>
+                        <li>p256dh</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <p><strong>Returns:</strong></p>
+    <ul>
+        <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
+        <li>Message (if applicable): Confirmation subscription has been updated.</li>
     </ul>
 </body>
 </html>

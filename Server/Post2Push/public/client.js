@@ -118,7 +118,13 @@ async function run() {
                 else {
                     console.log('Cookie found, adding the new token to it...');
                     var oldSubscriptionTokens = JSON.parse(cookie);
-                    oldSubscriptionTokens.push(responseJson.SubscriptionToken);
+
+                    var newTokenIsAlreadyInList = (oldSubscriptionTokens.indexOf(responseJson.SubscriptionToken) > -1);
+                    if (newTokenIsAlreadyInList == false) {
+                        console.log('Token is indeed new and no duplicate subscription...');
+                        oldSubscriptionTokens.push(responseJson.SubscriptionToken);
+                    }
+                    
                     var newCookieStringified = JSON.stringify(oldSubscriptionTokens);
                     setCookie(cookieName, newCookieStringified, 1825);
                 }      
