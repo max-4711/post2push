@@ -156,6 +156,18 @@ async function run() {
     });
 }
 
+
+function initialize() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then(() =>
+        {
+            console.log('Service worker is ready, beginning to perfom init.');
+            updateExistingEndpoints();
+        });
+    }
+}
+
+
 var deliveryDetails;
 var existingEndpointsUpdated = false;
 async function updateExistingEndpoints() {
@@ -248,8 +260,7 @@ async function updateExistingEndpoints() {
 }
 
 window.addEventListener('load', function () {
-    console.log('Window is ready!');
-    updateExistingEndpoints();
+    initialize();
 })
 
 async function posttochannel() {
