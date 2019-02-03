@@ -26,6 +26,7 @@ async function createchannel() {
         payload.IconUrl = notificationiconuri;
     }
 
+    var color = "red";
     await fetch('https://PIPELINE_INSERT_APP_URL/channels', {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -34,7 +35,8 @@ async function createchannel() {
         }
     }).then((res) => {
         res.text().then((text) => {
-            document.getElementById('create_apiresponse').innerText = text;
+            if (res.ok) { color = "green"; }
+            document.getElementById('create_apiresponse').innerText = '<font color="' + color + '">' + text + "</font>";
         });
     });
 }
@@ -62,6 +64,7 @@ async function run() {
         ChannelSubscriptionSecret: subscriptionsecret
     };
 
+    var color = "red";
     console.log('Sending push endpoint data...');
     await fetch('https://PIPELINE_INSERT_APP_URL/subscriptions', {
         method: 'POST',
@@ -71,7 +74,8 @@ async function run() {
         }
     }).then((res) => {
         res.text().then((text) => {
-            document.getElementById('subscribe_apiresponse').innerText = text;
+            if (res.ok) { color = "green"; }
+            document.getElementById('subscribe_apiresponse').innerText = '<font color="' + color + '">' + text + "</font>";
         });
     });
 }
