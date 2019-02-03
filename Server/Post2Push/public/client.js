@@ -220,9 +220,7 @@ async function posttochannel() {
     var messagecontent = document.getElementById('post_messagecontent').value;
 
     if (channelname === '' || channelname === null || typeof channelname === 'undefined') {
-        alert('Please enter a channel name!');
-        channelname = channelname.replace("/", "_");
-        document.getElementById('post_channelnameinput').value = channelname;
+        alert('Please enter a channel name!');        
         return;
     }
 
@@ -238,6 +236,12 @@ async function posttochannel() {
 
     if (messagecontent === '' || messagecontent === null || typeof messagecontent === 'undefined') {
         alert('Please enter the message content!');
+        return;
+    }
+
+    const letters = /^[0-9a-zA-Z]+$/;
+    if (channelname.test(letters) !== false) {        
+        alert('Name contains illegal characters, only a-Z and 0-9 are allowed!');
         return;
     }
 

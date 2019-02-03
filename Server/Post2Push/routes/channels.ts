@@ -57,6 +57,12 @@ router.post('/', (req: any, res: express.Response) => {
         res.status(400).json({ 'Error': 'Maximum supported length for channel name is 100 characters' }).end();
         return;
     }
+    const letters = /^[0-9a-zA-Z]+$/;
+    if (req.body.Name.test(letters) !== false) {
+        req.connection.release();
+        res.status(403).json({ 'Error': 'Name contains illegal characters, only a-Z and 0-9 are allowed' }).end();
+        return;
+    }
 
     let pushSecret = tokenGenerator.Generate(50);
 
