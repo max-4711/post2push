@@ -168,7 +168,7 @@ function initialize() {
         {
             console.log('Timeout expired, registering push now, whether the service worker is ready or not...');
             updateExistingEndpoints();
-        }, 2500);
+        }, 3000);
     }
     else {
         document.getElementById("nopushsupportwarning").innerText = "Either you are visiting this site via an unsecure http connection, in incognito mode, or your browser does not support service workers (which are required to receive push notifications). Please ensure you are using https and you are currently not using incognito mode. If this does not solve your problem, please consider using another browser.";
@@ -198,6 +198,7 @@ async function updateExistingEndpoints() {
         // https://www.npmjs.com/package/web-push#using-vapid-key-for-applicationserverkey
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
     });
+    console.log('Push registered.');
 
     var cookie = getCookie(cookieName);    
 
