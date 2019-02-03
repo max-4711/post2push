@@ -164,6 +164,16 @@ async function updateExistingEndpoints() {
         console.log('Updating endpoint for token ' + subscriptionToken + '...');
         if (subscriptionToken === 'null' || subscriptionToken === null || typeof subscriptionToken === 'undefined') {
             console.log('Token ' + subscriptionToken + ' is obviously invalid, skipping to update that!');
+
+            index++;
+            if (index === subscriptionTokens.length) {
+                console.log('Done updating endpoints!');
+                existingEndpointsUpdated = true;
+                document.getElementById("subscribebutton").disabled = false;
+                document.getElementById("apiupdatespinnertext").innerText = 'Done!';
+                document.getElementById("apiupdatespinner").style.display = 'none';
+            }
+
             return;
         }
 
