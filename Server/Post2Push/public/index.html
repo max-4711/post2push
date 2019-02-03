@@ -37,7 +37,7 @@
     <div id="outer" style="margin-top: 10px; margin-bottom: 10px; margin-right: 20px; margin-left: 20px;">
         <p align="center"><button class="btn btn-sm btn-warning" id="apiupdatespinner"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Initializing...</button></p>
         <br />
-        This webpage is a tool to subscribe to channels and create new ones. Not all functionality of the post2push api, including posting into channels, is supported.<br />
+        This webpage is a tool to subscribe to channels and create new ones. Not all functionality of the post2push api is supported.<br />
         Please visit the <a href="https://PIPELINE_INSERT_APP_URL/public/api.html">api reference</a> for further information.<br /><br />
 
         <div class="alert alert-primary" role="alert">
@@ -65,7 +65,9 @@
         </div>
 
         <br />
+        <br />
         <hr />
+        <br />
         <br />
 
         <label for="basic-url">Create new push channel</label>
@@ -95,6 +97,42 @@
         </div>
         <button type="button" class="btn btn-primary" onclick="createchannel()" id="createchannelbutton">Create</button><br />
         <div class="alert alert-success" role="alert" id="create_feedbackalert" hidden="hidden">
+            Waiting for API response...
+        </div>
+
+        <br />
+        <br />
+        <hr />
+        <br />
+        <br />
+
+        <label for="basic-url">Posting into a channel</label>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Channel name:</span>
+            </div>
+            <input type="text" class="form-control" id="post_channelnameinput" aria-describedby="basic-addon3">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Channel pushing secret:</span>
+            </div>
+            <input type="text" class="form-control" id="post_channelpushsecret" aria-describedby="basic-addon3">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Message title:</span>
+            </div>
+            <input type="text" class="form-control" id="post_messagetitle" aria-describedby="basic-addon3">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Message content:</span>
+            </div>
+            <input type="text" class="form-control" id="post_messagecontent" aria-describedby="basic-addon3">
+        </div>
+        <button type="button" class="btn btn-primary" onclick="posttochannel()" id="posttochannelbutton">Post</button><br />
+        <div class="alert alert-success" role="alert" id="post_feedbackalert" hidden="hidden">
             Waiting for API response...
         </div>
     </div>

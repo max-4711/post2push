@@ -213,6 +213,70 @@ window.addEventListener('load', function () {
     updateExistingEndpoints();
 })
 
+async function posttochannel() {
+    var channelname = document.getElementById('post_channelnameinput').value;
+    var postsecret = document.getElementById('post_channelpushsecret').value;
+    var messagetitle = document.getElementById('post_messagetitle').value;
+    var messagecontent = document.getElementById('post_messagecontent').value;
+
+    if (channelname === '' || channelname === null || typeof channelname === 'undefined') {
+        alert('Please enter a channel name!');
+        channelname = channelname.replace("/", "_");
+        document.getElementById('post_channelnameinput').value = channelname;
+        return;
+    }
+
+    if (postsecret === '' || postsecret === null || typeof postsecret === 'undefined') {
+        alert('Please enter the channel creation secret!');
+        return;
+    }
+
+    if (messagetitle === '' || messagetitle === null || typeof messagetitle === 'undefined') {
+        alert('Please enter a message title!');
+        return;
+    }
+
+    if (messagecontent === '' || messagecontent === null || typeof messagecontent === 'undefined') {
+        alert('Please enter the message content!');
+        return;
+    }
+
+    document.getElementById("posttochannelbutton").disabled = true;
+    document.getElementById("posttochannelbutton").innerText = 'Working on it...';
+
+    var payload = {
+        PushSecret: postsecret,
+        MessageTitle: messagetitle,
+        MessageContent: messagecontent
+    };
+
+    var alertClassName = "alert alert-danger";
+    var posturl = 'https://PIPELINE_INSERT_APP_URL/channels/' + channelname + '/push';
+    await fetch(posturl, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then((res) => {
+        res.text().then((text) => {
+            document.getElementById("posttochannelbutton").disabled = false;
+            document.getElementById("posttochannelbutton").innerText = 'Post';
+            if (res.ok) {
+                alertClassName = "alert alert-success";
+            }
+            else {
+                alertClassName = "alert alert-danger";
+            }
+            var labelobject = document.getElementById('post_feedbackalert');
+            labelobject.innerText = text;
+            labelobject.className = alertClassName;
+            labelobject.removeAttribute("hidden");
+        });
+    });
+}
+
+
 function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
 
