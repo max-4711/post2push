@@ -17,11 +17,13 @@ const middleware = {
 router.use(middleware.getDbConnection);
 
 router.delete('/', (req: any, res: express.Response) => {
+    req.connection.release();
     res.status(405).json({ 'Error': 'DELETE not allowed.' }).end();
     return;
 });
 
 router.get('/', (req: any, res: express.Response) => {
+    req.connection.release();
     res.status(405).json({ 'Error': 'Not supported.' }).end();
     return;
 });
@@ -30,23 +32,28 @@ router.post('/', (req: any, res: express.Response) => {
     var type = req.headers['content-type'];
 
     if (type !== 'application/json') {
+        req.connection.release();
         res.status(406).json({ 'Error': 'Only type application/json supported' }).end();
         return;
     }
 
     if (req.body.Name === null || typeof req.body.Name === 'undefined') {
+        req.connection.release();
         res.status(400).json({ 'Error': 'Missing desired Name' }).end();
         return;
     }
     if (req.body.ChannelCreationSecret === null || typeof req.body.ChannelCreationSecret === 'undefined') {
+        req.connection.release();
         res.status(401).json({ 'Error': 'Missing ChannelCreationSecret' }).end();
         return;
     }
     if (req.body.ChannelCreationSecret !== appConfig.channelcreationsecret) {
+        req.connection.release();
         res.status(401).json({ 'Error': 'Invalid ChannelCreationSecret' }).end();
         return;
     }
     if (req.body.Name.length > 100) {
+        req.connection.release();
         res.status(400).json({ 'Error': 'Maximum supported length for channel name is 100 characters' }).end();
         return;
     }
@@ -62,6 +69,7 @@ router.post('/', (req: any, res: express.Response) => {
         }
         else {
             if (req.body.IconUrl.length > 100) {
+                req.connection.release();
                 res.status(400).json({ 'Error': 'Maximum supported length for icon URL is 100 characters' }).end();
                 return;
             }
@@ -73,6 +81,7 @@ router.post('/', (req: any, res: express.Response) => {
     }
     else {
         if (req.body.SubscriptionSecret.length > 40) {
+            req.connection.release();
             res.status(400).json({ 'Error': 'Maximum supported length for subscription secret is 40 characters' }).end();
             return;
         }
@@ -83,6 +92,7 @@ router.post('/', (req: any, res: express.Response) => {
         }
         else {
             if (req.body.IconUrl.length > 100) {
+                req.connection.release();
                 res.status(400).json({ 'Error': 'Maximum supported length for icon URL is 100 characters' }).end();
                 return;
             }
@@ -114,23 +124,28 @@ router.post('/:name/push', (req: any, res: express.Response) => {
     var type = req.headers['content-type'];
 
     if (type !== 'application/json') {
+        req.connection.release();
         res.status(406).json({ 'Error': 'Only type application/json supported' }).end();
         return;
     }
 
     if (req.params.name === null || typeof req.params.name === 'undefined') {
+        req.connection.release();
         res.status(400).json({ 'Error': 'Missing name' }).end();
         return;
     }
     if (req.body.MessageContent === null || typeof req.body.MessageContent === 'undefined') {
+        req.connection.release();
         res.status(400).json({ 'Error': 'Missing MessageContent' }).end();
         return;
     }
     if (req.body.MessageTitle === null || typeof req.body.MessageTitle === 'undefined') {
+        req.connection.release();
         res.status(400).json({ 'Error': 'Missing MessageTitle' }).end();
         return;
     }
     if (req.body.PushSecret === null || typeof req.body.PushSecret === 'undefined') {
+        req.connection.release();
         res.status(401).json({ 'Error': 'Missing PushSecret' }).end();
         return;
     }
@@ -152,6 +167,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
         }
 
         if (channelRows[0].push_secret !== req.body.PushSecret) {
+            req.connection.release();
             res.status(401).json({ 'Error': 'Invalid PushSecret' }).end();
             return;
         }
@@ -173,6 +189,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
             }
 
             if (channelRows[0].push_secret !== req.body.PushSecret) {
+                req.connection.release();
                 res.status(401).json({ 'Error': 'Invalid PushSecret' }).end();
                 return;
             }
@@ -215,25 +232,30 @@ router.post('/:name/push', (req: any, res: express.Response) => {
 });
 
 router.get('/:name/push', (req: any, res: express.Response) => {
+    req.connection.release();
     res.status(405).json({ 'Error': 'GET not allowed.' }).end();
     return;
 });
 
 router.delete('/:name/push', (req: any, res: express.Response) => {
+    req.connection.release();
     res.status(405).json({ 'Error': 'DELETE not allowed.' }).end();
     return;
 });
 
 router.delete('/:name', (req: any, res: express.Response) => {
     if (req.params.name === null || typeof req.params.name === 'undefined') {
+        req.connection.release();
         res.status(400).json({ 'Error': 'Missing name' }).end();
         return;
     }
     if (req.body.ChannelCreationSecret === null || typeof req.body.ChannelCreationSecret === 'undefined') {
+        req.connection.release();
         res.status(401).json({ 'Error': 'Missing ChannelCreationSecret' }).end();
         return;
     }
     if (req.body.ChannelCreationSecret !== appConfig.channelcreationsecret) {
+        req.connection.release();
         res.status(401).json({ 'Error': 'Invalid ChannelCreationSecret' }).end();
         return;
     }
@@ -259,11 +281,13 @@ router.delete('/:name', (req: any, res: express.Response) => {
 });
 
 router.get('/:name', (req: any, res: express.Response) => {
+    req.connection.release();
     res.status(501).json({ 'Error': 'Not supported.' }).end();
     return;
 });
 
 router.post('/:name', (req: any, res: express.Response) => {
+    req.connection.release();
     res.status(405).json({ 'Error': 'POST not allowed.' }).end();
     return;
 });

@@ -1,4 +1,5 @@
 ﻿const publicVapidKey = 'PIPELINE_INSERT_PUBLICVAPIDKEY';
+const cookieName = 'SubscriptionsCookie';
 
 function subscribechannel() {
     if ('serviceWorker' in navigator) {
@@ -66,22 +67,96 @@ async function run() {
         ChannelSubscriptionSecret: subscriptionsecret
     };
 
+    var labelobject = document.getElementById('subscribe_apiresponse');
+    var cookie = getCookie(cookieName);
+
     var color = "red";
-    console.log('Sending push endpoint data...');
-    await fetch('https://PIPELINE_INSERT_APP_URL/subscriptions', {
-        method: 'POST',
-        body: JSON.stringify(subscription),
-        headers: {
-            'content-type': 'application/json'
-        }
-    }).then((res) => {
-        res.text().then((text) => {
-            if (res.ok) { color = "green"; }
-            var labelobject = document.getElementById('subscribe_apiresponse');
-            labelobject.innerText = text;
-            labelobject.style.color = color;
+    if (cookie !== null) {
+        console.log('Registering push endpoint...');
+
+        await fetch('https://PIPELINE_INSERT_APP_URL/subscriptions', {
+            method: 'POST',
+            body: JSON.stringify(subscription),
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then((res) => {
+            res.text().then((text) => {
+                if (res.ok) { color = "green"; }                
+                labelobject.innerText = text;
+                labelobject.style.color = color;
+
+                console.log('Saving endpoint to cookie...');
+                var responseJson = JSON.parse(text);                
+                var newCookie = [responseJson.SubscriptionToken];
+                var newCookieStringified = JSON.stringify(newCookie);
+                setCookie(cookieName, newCookieStringified, 1825);
+                console.log('Completed!');
+            });
         });
-    });
+    }
+    else {
+        console.log('Updating push endpoint(s)...');
+        
+        labelobject.innerText = 'Updating push endpoint data for existing subscriptions (see dev console for more details)...';
+        labelobject.style.color = 'orange';
+
+        var subscriptionTokens = JSON.parse(cookie);
+
+        console.log('Found ' + subscriptionTokens.length + ' tokens, for which endpoints will be updated...');
+
+        var index = 0;
+        subscriptionTokens.forEach(function (subscriptionToken)
+        {
+            console.log('Updateing endpoint for token ' + subscriptionToken + '...');
+            var targetUrl = 'https://PIPELINE_INSERT_APP_URL/subscriptions/' + subscriptionToken;
+            var payload = {
+                DeliveryDetails: deliveryDetails
+            };
+
+            await fetch(targetUrl, {
+                method: 'PUT',
+                body: JSON.stringify(payload),
+                headers: {
+                    'content-type': 'application/json'
+                }
+            }).then((res) => {
+                res.text().then((text) => {
+                    console.log('Endpoint for token ' + subscriptionToken + ' updated: ' + text);
+                    index++;
+                    if (index === subscriptionTokens.length) {
+                        console.log('Now finally registering new push endpoint...');
+                        document.getElementById('subscribe_apiresponse').innerText = 'Registering new push endpoint...';
+
+                        await fetch('https://PIPELINE_INSERT_APP_URL/subscriptions', {
+                            method: 'POST',
+                            body: JSON.stringify(subscription),
+                            headers: {
+                                'content-type': 'application/json'
+                            }
+                        }).then((res) => {
+                            res.text().then((text) => {
+                                console.log('Endpoint registered: ' + text);
+                                if (res.ok) { color = "green"; }
+                                else { color = "red"; }
+                                labelobject.innerText = text;
+                                labelobject.style.color = color;
+
+                                console.log('Saving new token to cookie...');
+                                var responseJson = JSON.parse(text);
+                                var newToken = [responseJson.SubscriptionToken];
+                                subscriptionTokens.push(newToken);
+                                var newCookieStringified = JSON.stringify(subscriptionTokens);
+                                setCookie(cookieName, newCookieStringified, 1825);
+                                console.log('Completed!');
+                            });
+                        });
+
+                    }                    
+                });
+            });
+        });
+    }
 }
 
 function urlBase64ToUint8Array(base64String) {
@@ -99,4 +174,25 @@ function urlBase64ToUint8Array(base64String) {
     }
 
     return outputArray;
+}
+
+
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
 }

@@ -5,7 +5,7 @@ __Description:__ Can be used as indicator for availability of the post2push serv
 
 
 ## DELETE /
-__Description:__ Initiates a cleanup mechanism: Channels not used for at least 180 days and their subscribers will be purged from the database.
+__Description:__ Initiates a cleanup mechanism: Subscriptions with delivery details not updated for 3 years and channels not used for at least 365 days (and their subscriptions) will be purged from the database.
 
 __Parameters:__
 * ChannelCreationSecret: Secret configured in app.config.js in order to prove to be authorized to delete channels.
@@ -94,3 +94,19 @@ __Parameters:__
 __Returns:__
 * Error (if applicable): One sentence explaining what has gone wrong.
 * Message (if applicable): Confirmation subscription has been deleted.
+
+
+## PUT /subscriptions/:token
+__Description:__ Updates the delivery details of a subscription.
+
+__Parameters:__
+* token (in route): Token identifying the subscription
+* DeliveryDetails: Object containing updated information about VAPID push notification delivery
+    * endpoint
+    * keys
+        * auth
+        * p256dh
+
+__Returns:__
+* Error (if applicable): One sentence explaining what has gone wrong.
+* Message (if applicable): Confirmation subscription has been updated.
