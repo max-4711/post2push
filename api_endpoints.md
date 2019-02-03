@@ -24,12 +24,40 @@ __Parameters:__
 * Name: Desired name of the new push channel. Will also be used to uniquely identify the channel on the server. Maximum length is 50 characters. Only characters a-Z and 0-9 are allowed. If a channel with same name already exists, channel creation will fail.
 * ChannelCreationSecret: Secret configured in app.config.js in order to prove to be authorized to create new channels.
 * SubscriptionSecret (optional): Desired secret, which will be needed to subscribe to the channel. If not provided, created channel can be subscribed without any authentication. Maximum length is 40 characters.
-* IconUrl (optional): URL of any image, which will be shown in push channels postet to the channel. If not provided, no icon will be shown. Maximum length is 200 characters.
+* IconUrl (optional): URL of any image, which will be shown in push notifications posted to the channel. If not provided, no icon will be shown. Maximum length is 200 characters.
 
 __Returns:__
 * Error (if applicable): One sentence explaining what has gone wrong.
 * Message (if applicable): Confirmation for channel creation, if no error has occurred.
 * PushSecret (if applicable): Secret, which will be needed in order to push messages to the channel.
+
+
+## PUT /channels/:name
+__Description:__ Updates IconUrl and SubscriptionSecret of an existing channel.
+
+__Accepted content type:__ application/json
+
+__Parameters:__
+* name (in route): Name of the target push channel
+* ChannelCreationSecret: Secret configured in app.config.js in order to prove to be authorized to edit channels.
+* SubscriptionSecret (optional): Desired secret, which will be needed to subscribe to the channel. If not provided, created channel can be subscribed without any authentication. Maximum length is 40 characters.
+* IconUrl (optional): URL of any image, which will be shown in push notifications posted to the channel. If not provided, no icon will be shown. Maximum length is 200 characters.
+
+__Returns:__
+* Error (if applicable): One sentence explaining what has gone wrong.
+* Message (if applicable): Confirmation for channel creation, if no error has occurred.
+
+
+## DELETE /channels/:name
+__Description:__ Deletes a push channel.
+
+__Parameters:__
+* name (in route): Name of the target push channel
+* ChannelCreationSecret: Secret configured in app.config.js in order to prove to be authorized to delete channels.
+
+__Returns:__
+* Error (if applicable): One sentence explaining what has gone wrong.
+* Message (if applicable): Confirmation channel has been deleted.
 
 
 ## POST /channels/:name/push
@@ -46,18 +74,6 @@ __Parameters:__
 __Returns:__
 * Error (if applicable): One sentence explaining what has gone wrong.
 * Message (if applicable): Confirmation for notifications have been sent.
-
-
-## DELETE /channels/:name
-__Description:__ Deletes a push channel.
-
-__Parameters:__
-* name (in route): Name of the target push channel
-* ChannelCreationSecret: Secret configured in app.config.js in order to prove to be authorized to delete channels.
-
-__Returns:__
-* Error (if applicable): One sentence explaining what has gone wrong.
-* Message (if applicable): Confirmation channel has been deleted.
 
 
 ## POST /subscriptions/
@@ -98,6 +114,8 @@ __Returns:__
 
 ## PUT /subscriptions/:token
 __Description:__ Updates the delivery details of a subscription.
+
+__Accepted content type:__ application/json
 
 __Parameters:__
 * token (in route): Token identifying the subscription

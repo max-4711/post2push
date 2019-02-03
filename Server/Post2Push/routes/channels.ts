@@ -30,7 +30,6 @@ router.get('/', (req: any, res: express.Response) => {
 
 router.post('/', (req: any, res: express.Response) => {
     var type = req.headers['content-type'];
-
     if (type !== 'application/json') {
         req.connection.release();
         res.status(406).json({ 'Error': 'Only type application/json supported' }).end();
@@ -267,7 +266,7 @@ router.delete('/:name', (req: any, res: express.Response) => {
     }
 
     var query = 'DELETE FROM channel WHERE name = ?';
-    query = mysql.format(query, req.params.token);
+    query = mysql.format(query, req.params.name);
 
     req.connection.query(query, function (err, result) {
         req.connection.release();
@@ -296,6 +295,84 @@ router.post('/:name', (req: any, res: express.Response) => {
     req.connection.release();
     res.status(405).json({ 'Error': 'POST not allowed.' }).end();
     return;
+});
+
+router.put('/:name', (req: any, res: express.Response) => {
+    var type = req.headers['content-type'];
+    if (type !== 'application/json') {
+        req.connection.release();
+        res.status(406).json({ 'Error': 'Only type application/json supported' }).end();
+        return;
+    }
+    if (req.params.name === null || typeof req.params.name === 'undefined') {
+        req.connection.release();
+        res.status(400).json({ 'Error': 'Missing name' }).end();
+        return;
+    }
+    if (req.body.ChannelCreationSecret === null || typeof req.body.ChannelCreationSecret === 'undefined') {
+        req.connection.release();
+        res.status(401).json({ 'Error': 'Missing ChannelCreationSecret' }).end();
+        return;
+    }
+    if (req.body.ChannelCreationSecret !== appConfig.channelcreationsecret) {
+        req.connection.release();
+        res.status(401).json({ 'Error': 'Invalid ChannelCreationSecret' }).end();
+        return;
+    }
+
+    var updateChannelQUery;
+    if (req.body.IconUrl !== null && typeof req.body.IconUrl !== 'undefined') {
+        if (req.body.IconUrl.length > 200) {
+            req.connection.release();
+            res.status(400).json({ 'Error': 'Maximum supported length for IconUrl is 200 characters' }).end();
+            return;
+        }
+
+        if (req.body.SubscriptionSecret !== null && typeof req.body.SubscriptionSecret !== 'undefined') {
+            if (req.body.SubscriptionSecret.length > 40) {
+                req.connection.release();
+                res.status(400).json({ 'Error': 'Maximum supported length for SubscriptionSecret is 40 characters' }).end();
+                return;
+            }
+            updateChannelQUery = 'UPDATE channel SET icon_url = ?, subscription_secret = ? WHERE name = ?';
+            updateChannelQUery = mysql.format(updateChannelQUery, [req.body.IconUrl, req.body.SubscriptionSecret, req.params.name]);
+        }
+        else {
+            updateChannelQUery = 'UPDATE channel SET icon_url = ?, subscription_secret = NULL WHERE name = ?';
+            updateChannelQUery = mysql.format(updateChannelQUery, [req.body.IconUrl, req.params.name]);
+        }
+    }
+    else {
+        if (req.body.SubscriptionSecret !== null && typeof req.body.SubscriptionSecret !== 'undefined') {
+            if (req.body.SubscriptionSecret.length > 40) {
+                req.connection.release();
+                res.status(400).json({ 'Error': 'Maximum supported length for SubscriptionSecret is 40 characters' }).end();
+                return;
+            }
+            updateChannelQUery = 'UPDATE channel SET subscription_secret = ?, icon_url = NULL WHERE name = ?';
+            updateChannelQUery = mysql.format(updateChannelQUery, [req.body.SubscriptionSecret, req.params.name]);
+        }
+        else {
+            updateChannelQUery = 'UPDATE channel SET subscription_secret = NULL, icon_url = NULL WHERE name = ?';
+            updateChannelQUery = mysql.format(updateChannelQUery, req.params.name);
+        }
+    }
+
+    req.connection.query(updateChannelQUery, function (err, result) {
+        req.connection.release();
+
+        if (err) {
+            res.status(500).json({ 'Error': 'Unknown database error' }).end();
+            return;
+        }
+
+        if (result.affectedRows === 0) {
+            res.status(404).json({ 'Error': 'No channel with this name present.' });
+            return;
+        }
+
+        res.status(200).json({ 'Message': 'Channel successfully updated.' });
+    });
 });
 
 export default router;

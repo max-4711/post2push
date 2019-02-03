@@ -178,6 +178,12 @@ router.delete('/:token', (req: any, res: express.Response) => {
 });
 
 router.put('/:token', (req: any, res: express.Response) => {
+    var type = req.headers['content-type'];
+    if (type !== 'application/json') {
+        req.connection.release();
+        res.status(406).json({ 'Error': 'Only type application/json supported' }).end();
+        return;
+    }
     if (req.params.token === null || typeof req.params.token === 'undefined') {
         req.connection.release();
         res.status(400).json({ 'Error': 'Missing subscription token' }).end();

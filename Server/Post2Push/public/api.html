@@ -7,8 +7,10 @@
 </head>
 <body>
     <h1 id="api-endpoints">API endpoints</h1>
+    <br />
     <h2 id="get-">GET /</h2>
     <p><strong>Description:</strong> Can be used as indicator for availability of the post2push service.</p>
+    <br />
     <h2 id="delete-">DELETE /</h2>
     <p><strong>Description:</strong> Initiates a cleanup mechanism: Subscriptions with delivery details not updated for 3 years and channels not used for at least 365 days (and their subscriptions) will be purged from the database.</p>
     <p><strong>Parameters:</strong></p>
@@ -20,6 +22,7 @@
         <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
         <li>Message (if applicable): Confirmation for channel deletion, including the number of affected database rows.</li>
     </ul>
+    <br />
     <h2 id="post-channels-">POST /channels/</h2>
     <p><strong>Description:</strong> Creates a new push channel.</p>
     <p><strong>Accepted content type:</strong> application/json</p>
@@ -28,7 +31,7 @@
         <li>Name: Desired name of the new push channel. Will also be used to uniquely identify the channel on the server. Maximum length is 50 characters. Only characters a-Z and 0-9 are allowed. If a channel with same name already exists, channel creation will fail.</li>
         <li>ChannelCreationSecret: Secret configured in app.config.js in order to prove to be authorized to create new channels.</li>
         <li>SubscriptionSecret (optional): Desired secret, which will be needed to subscribe to the channel. If not provided, created channel can be subscribed without any authentication. Maximum length is 40 characters.</li>
-        <li>IconUrl (optional): URL of any image, which will be shown in push channels postet to the channel. If not provided, no icon will be shown. Maximum length is 200 characters.</li>
+        <li>IconUrl (optional): URL of any image, which will be shown in push notifications posted to the channel. If not provided, no icon will be shown. Maximum length is 200 characters.</li>
     </ul>
     <p><strong>Returns:</strong></p>
     <ul>
@@ -36,6 +39,36 @@
         <li>Message (if applicable): Confirmation for channel creation, if no error has occurred.</li>
         <li>PushSecret (if applicable): Secret, which will be needed in order to push messages to the channel.</li>
     </ul>
+    <br />
+    <h2 id="put-channels-name">PUT /channels/:name</h2>
+    <p><strong>Description:</strong> Updates IconUrl and SubscriptionSecret of an existing channel.</p>
+    <p><strong>Accepted content type:</strong> application/json</p>
+    <p><strong>Parameters:</strong></p>
+    <ul>
+        <li>name (in route): Name of the target push channel</li>
+        <li>ChannelCreationSecret: Secret configured in app.config.js in order to prove to be authorized to edit channels.</li>
+        <li>SubscriptionSecret (optional): Desired secret, which will be needed to subscribe to the channel. If not provided, created channel can be subscribed without any authentication. Maximum length is 40 characters.</li>
+        <li>IconUrl (optional): URL of any image, which will be shown in push notifications posted to the channel. If not provided, no icon will be shown. Maximum length is 200 characters.</li>
+    </ul>
+    <p><strong>Returns:</strong></p>
+    <ul>
+        <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
+        <li>Message (if applicable): Confirmation for channel creation, if no error has occurred.</li>
+    </ul>
+    <br />
+    <h2 id="delete-channels-name">DELETE /channels/:name</h2>
+    <p><strong>Description:</strong> Deletes a push channel.</p>
+    <p><strong>Parameters:</strong></p>
+    <ul>
+        <li>name (in route): Name of the target push channel</li>
+        <li>ChannelCreationSecret: Secret configured in app.config.js in order to prove to be authorized to delete channels.</li>
+    </ul>
+    <p><strong>Returns:</strong></p>
+    <ul>
+        <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
+        <li>Message (if applicable): Confirmation channel has been deleted.</li>
+    </ul>
+    <br />
     <h2 id="post-channels-name-push">POST /channels/:name/push</h2>
     <p><strong>Description:</strong> Sends a message into a push channel.</p>
     <p><strong>Accepted content type:</strong> application/json</p>
@@ -51,18 +84,7 @@
         <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
         <li>Message (if applicable): Confirmation for notifications have been sent.</li>
     </ul>
-    <h2 id="delete-channels-name">DELETE /channels/:name</h2>
-    <p><strong>Description:</strong> Deletes a push channel.</p>
-    <p><strong>Parameters:</strong></p>
-    <ul>
-        <li>name (in route): Name of the target push channel</li>
-        <li>ChannelCreationSecret: Secret configured in app.config.js in order to prove to be authorized to delete channels.</li>
-    </ul>
-    <p><strong>Returns:</strong></p>
-    <ul>
-        <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
-        <li>Message (if applicable): Confirmation channel has been deleted.</li>
-    </ul>
+    <br />
     <h2 id="post-subscriptions-">POST /subscriptions/</h2>
     <p><strong>Description:</strong> Creates a new subscription for a push channel.</p>
     <p><strong>Accepted content type:</strong> application/json</p>
@@ -94,6 +116,7 @@
         <li>If the endpoint already subscribed the channel, no new subscription will be created, as this would result in duplicate notifications.</li>
         <li>As confirmation and for testing purposes, a push notification will be sent to the configured endpoint.</li>
     </ul>
+    <br />
     <h2 id="delete-subscriptions-token">DELETE /subscriptions/:token</h2>
     <p><strong>Description:</strong> Deletes a subscription.</p>
     <p><strong>Parameters:</strong> </p>
@@ -105,8 +128,10 @@
         <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
         <li>Message (if applicable): Confirmation subscription has been deleted.</li>
     </ul>
+    <br />
     <h2 id="put-subscriptions-token">PUT /subscriptions/:token</h2>
     <p><strong>Description:</strong> Updates the delivery details of a subscription.</p>
+    <p><strong>Accepted content type:</strong> application/json</p>
     <p><strong>Parameters:</strong></p>
     <ul>
         <li>token (in route): Token identifying the subscription</li>
