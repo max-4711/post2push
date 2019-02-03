@@ -52,9 +52,9 @@ router.post('/', (req: any, res: express.Response) => {
         res.status(401).json({ 'Error': 'Invalid ChannelCreationSecret' }).end();
         return;
     }
-    if (req.body.Name.length > 100) {
+    if (req.body.Name.length > 50) {
         req.connection.release();
-        res.status(400).json({ 'Error': 'Maximum supported length for channel name is 100 characters' }).end();
+        res.status(400).json({ 'Error': 'Maximum supported length for channel name is 50 characters' }).end();
         return;
     }
     const letters = /^[0-9a-zA-Z]+$/;
@@ -74,9 +74,9 @@ router.post('/', (req: any, res: express.Response) => {
             createChannelQuery = mysql.format(createChannelQuery, [req.body.Name, pushSecret]);
         }
         else {
-            if (req.body.IconUrl.length > 100) {
+            if (req.body.IconUrl.length > 200) {
                 req.connection.release();
-                res.status(400).json({ 'Error': 'Maximum supported length for icon URL is 100 characters' }).end();
+                res.status(400).json({ 'Error': 'Maximum supported length for icon URL is 200 characters' }).end();
                 return;
             }
 
@@ -97,9 +97,9 @@ router.post('/', (req: any, res: express.Response) => {
             createChannelQuery = mysql.format(createChannelQuery, [req.body.Name, pushSecret, req.body.SubscriptionSecret]);
         }
         else {
-            if (req.body.IconUrl.length > 100) {
+            if (req.body.IconUrl.length > 200) {
                 req.connection.release();
-                res.status(400).json({ 'Error': 'Maximum supported length for icon URL is 100 characters' }).end();
+                res.status(400).json({ 'Error': 'Maximum supported length for icon URL is 200 characters' }).end();
                 return;
             }
 

@@ -21,10 +21,10 @@ __Description:__ Creates a new push channel.
 __Accepted content type:__ application/json
 
 __Parameters:__
-* Name: Desired name of the new push channel. Will also be used to uniquely identify the channel on the server. Maximum length is 100 characters. Only characters a-Z and 0-9 are allowed. If a channel with same name already exists, channel creation will fail.
+* Name: Desired name of the new push channel. Will also be used to uniquely identify the channel on the server. Maximum length is 50 characters. Only characters a-Z and 0-9 are allowed. If a channel with same name already exists, channel creation will fail.
 * ChannelCreationSecret: Secret configured in app.config.js in order to prove to be authorized to create new channels.
 * SubscriptionSecret (optional): Desired secret, which will be needed to subscribe to the channel. If not provided, created channel can be subscribed without any authentication. Maximum length is 40 characters.
-* IconUrl (optional): URL of any image, which will be shown in push channels postet to the channel. If not provided, no icon will be shown. Maximum length is 100 characters.
+* IconUrl (optional): URL of any image, which will be shown in push channels postet to the channel. If not provided, no icon will be shown. Maximum length is 200 characters.
 
 __Returns:__
 * Error (if applicable): One sentence explaining what has gone wrong.
@@ -73,7 +73,7 @@ __Parameters:__
         * auth
         * p256dh
 * ChannelSubscriptionSecret (if applicable): Secret as authentication for subscribing to the push channel. Can be nonexistent or up to 40 characters, just as configured upon channel creation.
-* Name (optional): View name for this subscription. Won't be programmatically evaluated. Maximum supported length is 100 characters.
+* Name (optional): View name for this subscription. Won't be programmatically evaluated. Maximum supported length is 50 characters.
 
 __Returns:__
 * Error (if applicable): One sentence explaining what has gone wrong.

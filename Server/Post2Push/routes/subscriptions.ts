@@ -105,9 +105,9 @@ router.post('/', (req: any, res: express.Response) => {
                 createSubscriptionQuery = mysql.format(createSubscriptionQuery, [subscriptionToken, req.body.ChannelName, deliveryDetailsStringified]);
             }
             else {
-                if (req.body.Name.length > 100) {
+                if (req.body.Name.length > 50) {
                     req.connection.release();
-                    res.status(400).json({ 'Error': 'Maximum supported length for subscription name is 100 characters' }).end();
+                    res.status(400).json({ 'Error': 'Maximum supported length for subscription name is 50 characters' }).end();
                     return;
                 }
 
