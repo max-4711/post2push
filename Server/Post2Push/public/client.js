@@ -182,8 +182,8 @@ var deliveryDetails;
 var existingEndpointsUpdated = false;
 async function updateExistingEndpoints() {
     if (existingEndpointsUpdated) {
-        return;
         console.log('Init already done, skipping.');
+        return;        
     }
     existingEndpointsUpdated = true;
 
