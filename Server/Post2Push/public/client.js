@@ -114,7 +114,7 @@ async function run() {
                 DeliveryDetails: deliveryDetails
             };
 
-            await fetch(targetUrl, {
+            fetch(targetUrl, {
                 method: 'PUT',
                 body: JSON.stringify(payload),
                 headers: {
@@ -128,7 +128,7 @@ async function run() {
                         console.log('Now finally registering new push endpoint...');
                         document.getElementById('subscribe_apiresponse').innerText = 'Registering new push endpoint...';
 
-                        await fetch('https://PIPELINE_INSERT_APP_URL/subscriptions', {
+                        fetch('https://PIPELINE_INSERT_APP_URL/subscriptions', {
                             method: 'POST',
                             body: JSON.stringify(subscription),
                             headers: {
