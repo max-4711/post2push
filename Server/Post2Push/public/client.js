@@ -163,6 +163,12 @@ function initialize() {
             console.log('Service worker is ready, beginning to perfom init.');
             updateExistingEndpoints();
         });
+
+        setTimeout(function ()
+        {
+            console.log('Timeout expired, registering push now, whether the service worker is ready or not...');
+            updateExistingEndpoints();
+        }, 2000);
     }
     else {
         document.getElementById("nopushsupportwarning").innerText = "Either you are visiting this site via an unsecure http connection, or your browser does not support service workers (which are required to receive push notifications). Please ensure you are using https or consider using another browser.";
@@ -175,6 +181,12 @@ function initialize() {
 var deliveryDetails;
 var existingEndpointsUpdated = false;
 async function updateExistingEndpoints() {
+    if (existingEndpointsUpdated) {
+        return;
+        console.log('Init already done, skipping.');
+    }
+    existingEndpointsUpdated = true;
+
     console.log('Registering service worker...');
     const registration = await navigator.serviceWorker.
         register('https://PIPELINE_INSERT_APP_URL/public/worker.js', { scope: '/post2push/public/' });
@@ -191,7 +203,8 @@ async function updateExistingEndpoints() {
 
     if (typeof cookie === 'undefined' || cookie === null) {
         console.log('No cookie detected -> no endpoints need to be updated.');
-        existingEndpointsUpdated = true;
+        document.getElementById("subscribebutton").disabled = false;
+        document.getElementById("apiupdatespinner").style.display = 'none';        
         return;
     }
 
@@ -199,9 +212,9 @@ async function updateExistingEndpoints() {
 
     if (subscriptionTokens === null || typeof subscriptionTokens === 'undefined' || subscriptionTokens.length === 0) {
         console.log('No tokens in cookie ' + subscriptionTokens.length + ', no initialization needed.');
-        existingEndpointsUpdated = true;
         document.getElementById("subscribebutton").disabled = false;
         document.getElementById("apiupdatespinner").style.display = 'none';
+        return;
     }
 
     console.log('Found ' + subscriptionTokens.length + ' tokens, for which endpoints will be updated...');
@@ -215,7 +228,6 @@ async function updateExistingEndpoints() {
             index++;
             if (index === subscriptionTokens.length) {
                 console.log('Done updating endpoints!');
-                existingEndpointsUpdated = true;
                 document.getElementById("subscribebutton").disabled = false;
                 document.getElementById("apiupdatespinner").style.display = 'none';
                 //Hier lieber nicht neues Cookie persistieren; bei Netzwerkproblemen könnte sonst evtl gar kein Token mehr im Cookie sein (?)
@@ -250,7 +262,6 @@ async function updateExistingEndpoints() {
                 index++;
                 if (index === subscriptionTokens.length) {
                     console.log('Done updating endpoints!');
-                    existingEndpointsUpdated = true;
                     document.getElementById("subscribebutton").disabled = false;
                     document.getElementById("apiupdatespinner").style.display = 'none';
 
