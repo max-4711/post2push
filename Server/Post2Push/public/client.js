@@ -6,7 +6,7 @@ function subscribechannel() {
         run().catch(error => console.error(error));
     }
     else {
-        alert('Your browser does not support service workers. Unfortunately, service workers are required to implement background notifications. Please try another browser.');
+        alert('Your browser does not support service workers or you not visiting this site via a secured https connection. Unfortunately, service workers are required to implement background notifications. Please ensure you are using https or try another browser.');
     }    
 }
 
@@ -165,7 +165,7 @@ function initialize() {
         });
     }
     else {
-        document.getElementById("nopushsupportwarning").innerText = "Your browser does not support service workers, which are required to receive push notifications. Please consider using another browser.";
+        document.getElementById("nopushsupportwarning").innerText = "Either you are visiting this site via an unsecure http connection, or your browser does not support service workers (which are required to receive push notifications). Please ensure you are using https or consider using another browser.";
         document.getElementById("nopushsupportwarning").className = "alert alert-dark";
         document.getElementById("apiupdatespinner").style.display = 'none';
     }
