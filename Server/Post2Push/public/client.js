@@ -180,6 +180,14 @@ async function updateExistingEndpoints() {
     }
 
     var subscriptionTokens = JSON.parse(cookie);
+
+    if (subscriptionTokens === null || typeof subscriptionTokens === 'undefined' || subscriptionTokens.length === 0) {
+        console.log('No tokens in cookie ' + subscriptionTokens.length + ', no initialization needed.');
+        existingEndpointsUpdated = true;
+        document.getElementById("subscribebutton").disabled = false;
+        document.getElementById("apiupdatespinner").style.display = 'none';
+    }
+
     console.log('Found ' + subscriptionTokens.length + ' tokens, for which endpoints will be updated...');
     var validTokens = [];
 
