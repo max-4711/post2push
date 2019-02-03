@@ -170,7 +170,6 @@ async function updateExistingEndpoints() {
                 console.log('Done updating endpoints!');
                 existingEndpointsUpdated = true;
                 document.getElementById("subscribebutton").disabled = false;
-                document.getElementById("apiupdatespinnertext").innerText = 'Done!';
                 document.getElementById("apiupdatespinner").style.display = 'none';
             }
 
@@ -196,7 +195,6 @@ async function updateExistingEndpoints() {
                     console.log('Done updating endpoints!');
                     existingEndpointsUpdated = true;
                     document.getElementById("subscribebutton").disabled = false;
-                    document.getElementById("apiupdatespinnertext").innerText = 'Done!';
                     document.getElementById("apiupdatespinner").style.display = 'none';
                 }
             });
