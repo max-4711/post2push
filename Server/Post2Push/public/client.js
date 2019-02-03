@@ -9,7 +9,7 @@ function subscribechannel() {
     }    
 }
 
-function createchannel() {
+async function createchannel() {
     var channelname = document.getElementById('create_channelnameinput').value;
     var subscriptionsecret = document.getElementById('create_channelsubscriptionsecret').value;
     var notificationiconuri = document.getElementById('create_notificationiconuri').value;
