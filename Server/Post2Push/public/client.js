@@ -33,7 +33,9 @@ async function createchannel() {
             'content-type': 'application/json'
         }
     }).then((res) => {
-        document.getElementById('create_apiresponse').innerText = res.text();
+        res.text().then((text) => {
+            document.getElementById('create_apiresponse').innerText = text;
+        });
     });
 }
 
@@ -68,7 +70,9 @@ async function run() {
             'content-type': 'application/json'
         }
     }).then((res) => {
-        document.getElementById('subscribe_apiresponse').innerText = res.text();
+        res.text().then((text) => {
+            document.getElementById('subscribe_apiresponse').innerText = text;
+        });
     });
 }
 
