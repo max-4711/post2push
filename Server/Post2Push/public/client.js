@@ -26,20 +26,15 @@ async function createchannel() {
         payload.IconUrl = notificationiconuri;
     }
 
-    var response = await fetch('https://PIPELINE_INSERT_APP_URL/channels', {
+    await fetch('https://PIPELINE_INSERT_APP_URL/channels', {
         method: 'POST',
         body: JSON.stringify(payload),
         headers: {
             'content-type': 'application/json'
         }
+    }).then((res) => {
+        document.getElementById('create_apiresponse').innerText = res.text();
     });
-
-    if (response.body.SubscriptionToken === null || typeof response.body.SubscriptionToken === 'undefined') {
-        document.getElementById('create_apiresponse').innerText = response.body.Error;
-    }
-    else {
-        document.getElementById('create_apiresponse').innerText = response.body.Message + ', PushSecret: ' + response.body.PushSecret;
-    }
 }
 
 async function run() {
@@ -66,21 +61,15 @@ async function run() {
     };
 
     console.log('Sending push endpoint data...');
-    var response = await fetch('https://PIPELINE_INSERT_APP_URL/subscriptions', {
+    await fetch('https://PIPELINE_INSERT_APP_URL/subscriptions', {
         method: 'POST',
         body: JSON.stringify(subscription),
         headers: {
             'content-type': 'application/json'
         }
+    }).then((res) => {
+        document.getElementById('subscribe_apiresponse').innerText = res.text();
     });
-    console.log('Sent push');
-
-    if (response.body.SubscriptionToken === null || typeof response.body.SubscriptionToken === 'undefined') {
-        document.getElementById('subscribe_apiresponse').innerText = response.body.Error; 
-    }
-    else {
-        document.getElementById('subscribe_apiresponse').innerText = response.body.Message + ', SubscriptionToken: ' + response.body.SubscriptionToken; 
-    }
 }
 
 function urlBase64ToUint8Array(base64String) {
