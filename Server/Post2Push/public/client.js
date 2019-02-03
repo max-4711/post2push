@@ -6,7 +6,7 @@ function subscribechannel() {
         run().catch(error => console.error(error));
     }
     else {
-        alert('Your browser does not support service workers or you not visiting this site via a secured https connection. Unfortunately, service workers are required to implement background notifications. Please ensure you are using https or try another browser.');
+        alert('Your browser does not support service workers or you not visiting this site via a secured https connection or in private mode. Unfortunately, service workers are required to implement background notifications. Please ensure you are using https, are not using incognito mode. If this does not solve the problem, please try another browser.');
     }    
 }
 
@@ -168,10 +168,10 @@ function initialize() {
         {
             console.log('Timeout expired, registering push now, whether the service worker is ready or not...');
             updateExistingEndpoints();
-        }, 2000);
+        }, 2500);
     }
     else {
-        document.getElementById("nopushsupportwarning").innerText = "Either you are visiting this site via an unsecure http connection, or your browser does not support service workers (which are required to receive push notifications). Please ensure you are using https or consider using another browser.";
+        document.getElementById("nopushsupportwarning").innerText = "Either you are visiting this site via an unsecure http connection, in incognito mode, or your browser does not support service workers (which are required to receive push notifications). Please ensure you are using https and you are currently not using incognito mode. If this does not solve your problem, please consider using another browser.";
         document.getElementById("nopushsupportwarning").className = "alert alert-dark";
         document.getElementById("apiupdatespinner").style.display = 'none';
     }
