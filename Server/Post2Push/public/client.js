@@ -240,7 +240,7 @@ async function posttochannel() {
     }
 
     const letters = /^[0-9a-zA-Z]+$/;
-    if (channelname.test(letters) !== false) {        
+    if (!channelname.match(letters)) {        
         alert('Name contains illegal characters, only a-Z and 0-9 are allowed!');
         return;
     }

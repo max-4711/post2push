@@ -58,7 +58,7 @@ router.post('/', (req: any, res: express.Response) => {
         return;
     }
     const letters = /^[0-9a-zA-Z]+$/;
-    if (req.body.Name.test(letters) !== false) {
+    if (!req.body.Name.match(letters)) {
         req.connection.release();
         res.status(403).json({ 'Error': 'Name contains illegal characters, only a-Z and 0-9 are allowed' }).end();
         return;
