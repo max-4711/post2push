@@ -45,19 +45,6 @@ async function createchannel() {
 }
 
 async function run() {
-    console.log('Registering service worker...');
-    const registration = await navigator.serviceWorker.
-        register('https://PIPELINE_INSERT_APP_URL/public/worker.js', { scope: '/post2push/public/' });
-
-    console.log('Registering push...');
-    var deliveryDetails = await registration.pushManager.
-        subscribe({
-            userVisibleOnly: true,
-            // The `urlBase64ToUint8Array()` function is the same as in
-            // https://www.npmjs.com/package/web-push#using-vapid-key-for-applicationserverkey
-            applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
-        });
-
     var channelname = document.getElementById('subscribe_channelnameinput').value;
     var subscriptionsecret = document.getElementById('subscribe_channelsubscriptionsecret').value;
 
@@ -109,7 +96,19 @@ async function run() {
 }
 
 var existingEndpointsUpdated = false;
-function updateExistingEndpoints() {
+async function updateExistingEndpoints() {
+    console.log('Registering service worker...');
+    const registration = await navigator.serviceWorker.
+        register('https://PIPELINE_INSERT_APP_URL/public/worker.js', { scope: '/post2push/public/' });
+
+    console.log('Registering push...');
+    var deliveryDetails = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        // The `urlBase64ToUint8Array()` function is the same as in
+        // https://www.npmjs.com/package/web-push#using-vapid-key-for-applicationserverkey
+        applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+    });
+
     var cookie = getCookie(cookieName);
 
     if (typeof cookie === 'undefined' || cookie === null) {
