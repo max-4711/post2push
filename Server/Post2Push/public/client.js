@@ -159,11 +159,15 @@ async function run() {
 
 function initialize() {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.ready.then(() =>
-        {
+        navigator.serviceWorker.ready.then(() => {
             console.log('Service worker is ready, beginning to perfom init.');
             updateExistingEndpoints();
         });
+    }
+    else {
+        document.getElementById("nopushsupportwarning").innerText = "Your browser does not support service workers, which are required to receive push notifications. Please consider using another browser.";
+        document.getElementById("nopushsupportwarning").className = "alert alert-dark";
+        document.getElementById("apiupdatespinner").style.display = 'none';
     }
 }
 
