@@ -178,10 +178,9 @@ async function updateExistingEndpoints() {
     console.log('Found ' + subscriptionTokens.length + ' tokens, for which endpoints will be updated...');
 
     var index = 0;
-    subscriptionTokens.forEach(function (subscriptionToken) {
-        console.log('Updating endpoint for token ' + subscriptionToken + '...');
-        if (subscriptionToken === 'null' || subscriptionToken === null || typeof subscriptionToken === 'undefined') {
-            console.log('Token ' + subscriptionToken + ' is obviously invalid, skipping to update that!');
+    subscriptionTokens.forEach(function (subscriptionToken) {        
+        if (subscriptionToken === 'null' || subscriptionToken === null || typeof subscriptionToken === 'undefined' || subscriptionToken === '') {
+            console.log('Empty token detected, skipping to update that!');
 
             index++;
             if (index === subscriptionTokens.length) {
@@ -193,6 +192,7 @@ async function updateExistingEndpoints() {
 
             return;
         }
+        console.log('Updating endpoint for token ' + subscriptionToken + '...');
 
         var targetUrl = 'https://PIPELINE_INSERT_APP_URL/subscriptions/' + subscriptionToken;
         var payload = {
