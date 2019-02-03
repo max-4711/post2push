@@ -25,4 +25,4 @@ ALTER TABLE `subscription`
     FOREIGN KEY (`channel_name`) REFERENCES `channel`(`name`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 INSERT INTO `channel` (`name`       , `push_secret`          , `icon_url`                                      , `subscription_secret`   )
-VALUES                ('TestChannel', 'TestChannelPushSecret', 'https://api.studio-4711.com/public/success.png', 'TestSubscriptionSecret')
+VALUES                ('TestChannel', 'TestChannelPushSecret', 'https://api.studio-4711.com/post2push/public/success.png', 'TestSubscriptionSecret')

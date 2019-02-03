@@ -26,6 +26,12 @@ async function createchannel() {
         return;
     }
 
+    const letters = /^[0-9a-zA-Z]+$/;
+    if (!channelname.match(letters)) {
+        alert('Name contains illegal characters, only a-Z and 0-9 are allowed!');
+        return;
+    }
+
     document.getElementById("createchannelbutton").disabled = true;
     document.getElementById("createchannelbutton").innerText = 'Working on it...';
 
@@ -76,6 +82,12 @@ async function run() {
 
     if (channelname === '' || channelname === null || typeof channelname === 'undefined') {
         alert('Please enter a channel name!');
+        return;
+    }
+
+    const letters = /^[0-9a-zA-Z]+$/;
+    if (!channelname.match(letters)) {
+        alert('Name contains illegal characters, only a-Z and 0-9 are allowed!');
         return;
     }
 
