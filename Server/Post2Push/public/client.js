@@ -16,6 +16,19 @@ async function createchannel() {
     var notificationiconuri = document.getElementById('create_notificationiconuri').value;
     var channelcreationsecret = document.getElementById('create_channelcreationsecret').value;
 
+    if (channelname === '' || channelname === null || typeof channelname === 'undefined') {
+        alert('Please enter a channel name!');
+        return;
+    }
+
+    if (channelcreationsecret === '' || channelcreationsecret === null || typeof channelcreationsecret === 'undefined') {
+        alert('Please enter the channel creation secret!');
+        return;
+    }
+
+    document.getElementById("createchannelbutton").disabled = true;
+    document.getElementById("createchannelbutton").innerText = 'Working on it...';
+
     var payload = {
         Name: channelname,
         ChannelCreationSecret: channelcreationsecret
@@ -27,7 +40,7 @@ async function createchannel() {
         payload.IconUrl = notificationiconuri;
     }
 
-    var color = "red";
+    var alertClassName = "alert alert-danger";
     await fetch('https://PIPELINE_INSERT_APP_URL/channels', {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -36,10 +49,18 @@ async function createchannel() {
         }
     }).then((res) => {
         res.text().then((text) => {
-            if (res.ok) { color = "green"; }
-            var labelobject = document.getElementById('create_apiresponse');
+            document.getElementById("createchannelbutton").disabled = false;
+            document.getElementById("createchannelbutton").innerText = 'Create';
+            if (res.ok) {
+                alertClassName = "alert alert-success";
+            }
+            else {
+                alertClassName = "alert alert-danger";
+            }
+            var labelobject = document.getElementById('create_feedbackalert');
             labelobject.innerText = text;
-            labelobject.style.color = color;
+            labelobject.className = alertClassName;
+            labelobject.removeAttribute("hidden");
         });
     });
 }
@@ -58,14 +79,17 @@ async function run() {
         return;
     }
 
+    document.getElementById("subscribebutton").disabled = true;
+    document.getElementById("subscribebutton").innerText = 'Working on it...';
+
     var subscription = {
         ChannelName: channelname,
         DeliveryDetails: deliveryDetails,
         ChannelSubscriptionSecret: subscriptionsecret
     };
 
-    var labelobject = document.getElementById('subscribe_apiresponse');
-    var color = "red";
+    var labelobject = document.getElementById('subscribe_feedbackalert');
+    var labelobjectclass = "alert alert-danger";
     
     console.log('Registering push endpoint...');
 
@@ -77,6 +101,9 @@ async function run() {
         }
     }).then((res) => {
         res.text().then((text) => {
+            document.getElementById("subscribebutton").disabled = false;
+            document.getElementById("subscribebutton").innerText = 'Subscribe';
+
             if (res.ok)
             {
                 var responseJson = JSON.parse(text);
@@ -95,10 +122,11 @@ async function run() {
                     var newCookieStringified = JSON.stringify(oldSubscriptionTokens);
                     setCookie(cookieName, newCookieStringified, 1825);
                 }      
-                color = "green";
+                labelobjectclass = "alert alert-success";
             }                
             labelobject.innerText = text;
-            labelobject.style.color = color;
+            labelobject.className = labelobjectclass;
+            labelobject.removeAttribute("hidden");
                 
             console.log('Completed!');
         });
@@ -133,7 +161,12 @@ async function updateExistingEndpoints() {
 
     var index = 0;
     subscriptionTokens.forEach(function (subscriptionToken) {
-        console.log('Updateing endpoint for token ' + subscriptionToken + '...');
+        console.log('Updating endpoint for token ' + subscriptionToken + '...');
+        if (subscriptionToken === 'null' || subscriptionToken === null || typeof subscriptionToken === 'undefined') {
+            console.log('Token ' + subscriptionToken + ' is obviously invalid, skipping to update that!');
+            return;
+        }
+
         var targetUrl = 'https://PIPELINE_INSERT_APP_URL/subscriptions/' + subscriptionToken;
         var payload = {
             DeliveryDetails: deliveryDetails
@@ -153,6 +186,8 @@ async function updateExistingEndpoints() {
                     console.log('Done updating endpoints!');
                     existingEndpointsUpdated = true;
                     document.getElementById("subscribebutton").disabled = false;
+                    document.getElementById("apiupdatespinnertext").innerText = 'Done!';
+                    document.getElementById("apiupdatespinner").style.display = 'none';
                 }
             });
         });
