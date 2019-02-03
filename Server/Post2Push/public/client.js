@@ -36,7 +36,7 @@ async function createchannel() {
     }).then((res) => {
         res.text().then((text) => {
             if (res.ok) { color = "green"; }
-            document.getElementById('create_apiresponse').innerText = '<font color="' + color + '">' + text + "</font>";
+            document.getElementById('create_apiresponse').innerHtml = '<font color="' + color + '">' + text + "</font>";
         });
     });
 }
@@ -75,7 +75,7 @@ async function run() {
     }).then((res) => {
         res.text().then((text) => {
             if (res.ok) { color = "green"; }
-            document.getElementById('subscribe_apiresponse').innerText = '<font color="' + color + '">' + text + "</font>";
+            document.getElementById('subscribe_apiresponse').innerHtml = '<font color="' + color + '">' + text + "</font>";
         });
     });
 }
