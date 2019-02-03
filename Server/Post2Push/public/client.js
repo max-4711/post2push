@@ -16,8 +16,8 @@ function createchannel() {
     var channelcreationsecret = document.getElementById('create_channelcreationsecret').value;
 
     var payload = {
-        Name = channelname,
-        ChannelCreationSecret = channelcreationsecret
+        Name: channelname,
+        ChannelCreationSecret: channelcreationsecret
     };
     if (subscriptionsecret !== null && typeof subscriptionsecret !== 'undefined' && subscriptionsecret !== '') {
         payload.SubscriptionSecret = subscriptionsecret;
