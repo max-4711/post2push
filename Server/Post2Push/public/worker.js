@@ -43,7 +43,8 @@ self.addEventListener('push', ev => {
     }
 });
 
-self.addEventListener('notificationclick', function (e) {
+self.addEventListener('notificationclick', e => {
+    console.log('Got notification click', e);
     var notification = e.notification;
     var actionUrl = notification.data.actionUrl;
     var action = e.action;
@@ -63,14 +64,15 @@ self.addEventListener('notificationclick', function (e) {
                         return client.focus();
                     }
                 }
-                
+
                 if (clients.openWindow) {
                     console.log('Open new window');
                     return clients.openWindow(actionUrl);
                 }
             })
         );
-    } else {        
+    } else {
+        console.log('Closing notification');
         notification.close();
     }
 });
