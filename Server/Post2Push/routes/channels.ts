@@ -231,12 +231,9 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                             body: req.body.MessageContent,
                             requireInteraction: notificationIsPersistent,
                             actions: [
-                                { action: 'details', title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
+                                { action: req.body.ActionUrl, title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
                                 { action: 'dismiss', title: 'Schließen', icon: 'https://' + appConfig.applicationUrl + '/public/dismiss.png' }
-                            ],
-                            data: {
-                                actionUrl: req.body.ActionUrl
-                            }
+                            ]
                         };
                     }
 
@@ -257,12 +254,9 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                             icon: channelRows[0].icon_url,
                             requireInteraction: notificationIsPersistent,
                             actions: [
-                                { action: 'details', title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
+                                { action: req.body.ActionUrl, title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
                                 { action: 'dismiss', title: 'Schließen', icon: 'https://' + appConfig.applicationUrl + '/public/dismiss.png' }
-                            ],
-                            data: {
-                                actionUrl: req.body.ActionUrl
-                            }
+                            ]
                         };
                     }
                 }

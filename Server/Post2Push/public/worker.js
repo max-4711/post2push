@@ -46,10 +46,13 @@ self.addEventListener('push', ev => {
 self.addEventListener('notificationclick', e => {
     console.log('Got notification click', e);
     var notification = e.notification;
-    var actionUrl = notification.data.actionUrl;
     var action = e.action;
 
-    if (action === 'details') {
+    if (action === 'dismiss') {
+        console.log('Closing notification');
+        notification.close();
+    } else {
+        var actionUrl = action;
         notification.close();
         e.waitUntil(
             clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(windowClients => {
@@ -71,8 +74,5 @@ self.addEventListener('notificationclick', e => {
                 }
             })
         );
-    } else {
-        console.log('Closing notification');
-        notification.close();
     }
 });
