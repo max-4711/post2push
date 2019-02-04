@@ -36,7 +36,7 @@ router.delete('/', (req: any, res: express.Response) => {
         return;
     }
 
-    var subscriptionsQuery = "DELETE FROM subscription WHERE modification_timestamp < (NOW() - INTERVAL 1095 DAY)";
+    var subscriptionsQuery = "DELETE FROM subscription WHERE modification_timestamp < (NOW() - INTERVAL 1095 DAY) OR channel_name = 'TestChannel'";
 
     req.connection.query(subscriptionsQuery, function (err, subscriptionsResult) { 
         if (err) {
