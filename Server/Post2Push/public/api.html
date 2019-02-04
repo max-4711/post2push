@@ -6,7 +6,9 @@
     <title>post2push - API reference</title>
 </head>
 <body>
-    <h1 id="api-endpoints">post2push API endpoints</h1>
+    <h1 id="post2push-api-endpoints">post2push API endpoints</h1>
+    <br />
+    <h2 id="base-route-pipeline_insert_app_url-">Base route: PIPELINE_INSERT_APP_URL/</h2>
     <br />
     <h2 id="get-">GET /</h2>
     <p><strong>Description:</strong> Can be used as indicator for availability of the post2push service.</p>
@@ -78,12 +80,18 @@
         <li>MessageContent: Content of the push notification.</li>
         <li>MessageTitle: Title of the push notification.</li>
         <li>PushSecret: Secret in order to prove to be authorized to push to this channel.</li>
+        <li>MessageIsPersistent (optional): boolean, which prevents the notification from automatically disappearing after a while, if set to true. Defaults to false and may not be supported by all receivers.</li>
+        <li>ActionUrl (optional): Extends the notification by a button which will cause the passed URL to be opened, if the user clicks on it. May not be supported by all receivers.</li>
     </ul>
     <p><strong>Returns:</strong></p>
     <ul>
         <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
         <li>Message (if applicable): Confirmation for notifications have been sent.</li>
     </ul>
+    <p>
+        <strong>Remarks:</strong>
+        The server may also return additional information about the count of push notifications dispatched, including statistics about errors and/or successful deliveries. Please note, that these numbers -if provided- only reference delivery to the push notification provider, not to their endpoints.
+    </p>
     <br />
     <h2 id="post-subscriptions-">POST /subscriptions/</h2>
     <p><strong>Description:</strong> Creates a new subscription for a push channel.</p>
@@ -152,5 +160,6 @@
         <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
         <li>Message (if applicable): Confirmation subscription has been updated.</li>
     </ul>
+
 </body>
 </html>

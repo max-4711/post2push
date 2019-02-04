@@ -155,6 +155,13 @@ router.post('/:name/push', (req: any, res: express.Response) => {
         return;
     }
 
+    var notificationIsPersistent = false;
+    if (req.body.MessageIsPersistent !== null && typeof req.body.MessageIsPersistent !== 'undefined') {
+        if (req.body.MessageIsPersistent || req.body.MessageIsPersistent === 'true') {
+            notificationIsPersistent = true;
+        }
+    }
+
     var getAffectedChannelQuery = 'SELECT name, push_secret, icon_url FROM channel WHERE name = ?';
     getAffectedChannelQuery = mysql.format(getAffectedChannelQuery, req.params.name);
 
@@ -211,17 +218,61 @@ router.post('/:name/push', (req: any, res: express.Response) => {
 
                 var payload;
                 if (channelRows[0].icon_url === null || typeof channelRows[0].icon_url === 'undefined') {
-                    payload = JSON.stringify({ title: req.body.MessageTitle, body: req.body.MessageContent });
+                    if (req.body.ActionUrl === null && typeof req.body.ActionUrl === 'undefined') {
+                        payload = {
+                            title: req.body.MessageTitle,
+                            body: req.body.MessageContent,
+                            requireInteraction: notificationIsPersistent
+                        };
+                    }
+                    else {
+                        payload = {
+                            title: req.body.MessageTitle,
+                            body: req.body.MessageContent,
+                            requireInteraction: notificationIsPersistent,
+                            actions: [
+                                { action: 'details', title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
+                                { action: 'dismiss', title: 'Schließen', icon: 'https://' + appConfig.applicationUrl + '/public/dismiss.png' }
+                            ],
+                            data: {
+                                actionUrl: req.body.ActionUrl
+                            }
+                        };
+                    }
+
                 }
                 else {
-                    payload = JSON.stringify({ title: req.body.MessageTitle, body: req.body.MessageContent, icon: channelRows[0].icon_url });
+                    if (req.body.ActionUrl === null && typeof req.body.ActionUrl === 'undefined') {
+                        payload = {
+                            title: req.body.MessageTitle,
+                            body: req.body.MessageContent,
+                            icon: channelRows[0].icon_url,
+                            requireInteraction: notificationIsPersistent
+                        };
+                    }
+                    else {
+                        payload = {
+                            title: req.body.MessageTitle,
+                            body: req.body.MessageContent,
+                            icon: channelRows[0].icon_url,
+                            requireInteraction: notificationIsPersistent,
+                            actions: [
+                                { action: 'details', title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
+                                { action: 'dismiss', title: 'Schließen', icon: 'https://' + appConfig.applicationUrl + '/public/dismiss.png' }
+                            ],
+                            data: {
+                                actionUrl: req.body.ActionUrl
+                            }
+                        };
+                    }
                 }
+                var stringifiedPayload = JSON.stringify(payload);
 
                 var errorsCounter = 0;
                 var index;
                 for (index = 0; index < receiverRows.length; index++) {
                     var receiverData = JSON.parse(receiverRows[index].delivery_details);
-                    webpush.sendNotification(receiverData, payload).catch(error => {
+                    webpush.sendNotification(receiverData, stringifiedPayload).catch(error => {
                         errorsCounter++;
                         console.error('Error while sending push notification: ' + error.stack);
                     })

@@ -70,6 +70,10 @@ steps:
   displayName: 'Prepare client-side javascript for deployment'
   workingDirectory: Server/Post2Push/public
 
+- bash: sed -i -e 's#PIPELINE_INSERT_APP_URL#$(deployment.appUrl)#g' api.html
+  displayName: 'Prepare api reference for deployment'
+  workingDirectory: Server/Post2Push/public
+
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/Server/Post2Push'

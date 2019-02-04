@@ -57,6 +57,8 @@
     <Content Include="public\api.html">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="public\details.png" />
+    <Content Include="public\dismiss.png" />
     <Content Include="public\index.html">
       <SubType>Code</SubType>
     </Content>

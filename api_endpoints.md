@@ -1,4 +1,6 @@
-# API endpoints
+# post2push API endpoints
+
+## Base route: PIPELINE_INSERT_APP_URL/
 
 ## GET /
 __Description:__ Can be used as indicator for availability of the post2push service.
@@ -70,10 +72,15 @@ __Parameters:__
 * MessageContent: Content of the push notification.
 * MessageTitle: Title of the push notification.
 * PushSecret: Secret in order to prove to be authorized to push to this channel.
+* MessageIsPersistent (optional): boolean, which prevents the notification from automatically disappearing after a while, if set to true. Defaults to false and may not be supported by all receivers.
+* ActionUrl (optional): Extends the notification by a button which will cause the passed URL to be opened, if the user clicks on it. May not be supported by all receivers.
 
 __Returns:__
 * Error (if applicable): One sentence explaining what has gone wrong.
 * Message (if applicable): Confirmation for notifications have been sent.
+
+__Remarks:__
+The server may also return additional information about the count of push notifications dispatched, including statistics about errors and/or successful deliveries. Please note, that these numbers -if provided- only reference delivery to the push notification provider, not to their endpoints.
 
 
 ## POST /subscriptions/

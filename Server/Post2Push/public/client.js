@@ -158,19 +158,42 @@ async function run() {
 
 
 function initialize() {
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.ready.then(() => {
-            console.log('Service worker is ready, beginning to perfom init.');
-            updateExistingEndpoints();
-        });
+    if ('Notification' in window && navigator.serviceWorker) {
+        Notification.requestPermission().then(function (result) {
+            if (result === 'denied') {
+                console.log('Permission wasn\'t granted. Allow a retry.');
+                document.getElementById("nopushsupportwarning").innerText = "You have to authorize this site to send you push notifications, if you want to receive them.";
+                document.getElementById("nopushsupportwarning").className = "alert alert-dark";
+                document.getElementById("apiupdatespinner").style.display = 'none';
+                return;
+            }
+            if (result === 'default') {
+                console.log('The permission request was dismissed.');
+                document.getElementById("nopushsupportwarning").innerText = "You have to authorize this site to send you push notifications, if you want to receive them.";
+                document.getElementById("nopushsupportwarning").className = "alert alert-dark";
+                document.getElementById("apiupdatespinner").style.display = 'none';
+                return;
+            }
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(() => {
+                    console.log('Service worker is ready, beginning to perfom init.');
+                    updateExistingEndpoints();
+                });
 
-        setTimeout(function ()
-        {
-            console.log('Timeout expired, registering push now, whether the service worker is ready or not...');
-            updateExistingEndpoints();
-        }, 3000);
+                setTimeout(function () {
+                    console.log('Timeout expired, registering push now, whether the service worker is ready or not...');
+                    updateExistingEndpoints();
+                }, 10000);
+            }
+            else {
+                document.getElementById("nopushsupportwarning").innerText = "Either you are visiting this site via an unsecure http connection, in incognito mode, or your browser does not support service workers (which are required to receive push notifications). Please ensure you are using https and you are currently not using incognito mode. If this does not solve your problem, please consider using another browser.";
+                document.getElementById("nopushsupportwarning").className = "alert alert-dark";
+                document.getElementById("apiupdatespinner").style.display = 'none';
+            }
+        });
     }
     else {
+        console.log('Browser does not support notifications.');
         document.getElementById("nopushsupportwarning").innerText = "Either you are visiting this site via an unsecure http connection, in incognito mode, or your browser does not support service workers (which are required to receive push notifications). Please ensure you are using https and you are currently not using incognito mode. If this does not solve your problem, please consider using another browser.";
         document.getElementById("nopushsupportwarning").className = "alert alert-dark";
         document.getElementById("apiupdatespinner").style.display = 'none';
