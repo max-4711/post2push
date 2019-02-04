@@ -47,7 +47,7 @@ self.addEventListener('notificationclick', function (e) {
     if (action === 'details') {
         notification.close();
         e.waitUntil(
-            clients.matchAll({ type: 'window' }).then(windowClients => {
+            clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(windowClients => {
                 //Check auf schon offenes Fenster mit Ziel-URL
                 for (var i = 0; i < windowClients.length; i++) {
                     var client = windowClients[i];
