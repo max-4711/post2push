@@ -5,7 +5,8 @@ self.addEventListener('push', ev => {
     console.log('Got push', data);
 
     if (data.icon !== null && typeof data.icon !== 'undefined') {
-        if (data.actions !== null && typeof data.actions !== 'undefined') { //Icon+Actions            
+        if (data.actions !== null && typeof data.actions !== 'undefined') {
+            console.log('Showing notification with icon and actions');
             self.registration.showNotification(data.title, {
                 body: data.body,
                 icon: data.icon,
@@ -13,7 +14,8 @@ self.addEventListener('push', ev => {
                 actions: data.actions
             });
         }
-        else { //Icon            
+        else {
+            console.log('Showing notification with icon');
             self.registration.showNotification(data.title, {
                 body: data.body,
                 icon: data.icon,
@@ -22,14 +24,16 @@ self.addEventListener('push', ev => {
         }
     }
     else {
-        if (data.actions !== null && typeof data.actions !== 'undefined') { //Actions            
+        if (data.actions !== null && typeof data.actions !== 'undefined') {
+            console.log('Showing notification with actions');
             self.registration.showNotification(data.title, {
                 body: data.body,
                 requireInteraction: data.requireInteraction,
                 actions: data.actions
             });
         }
-        else { //Nichts
+        else {
+            console.log('Showing plain notification');
             self.registration.showNotification(data.title,
             {
                 body: data.body,
@@ -48,16 +52,20 @@ self.addEventListener('notificationclick', function (e) {
         notification.close();
         e.waitUntil(
             clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(windowClients => {
+                console.log('Trying to open or focus ' + actionUrl);
+
                 //Check auf schon offenes Fenster mit Ziel-URL
                 for (var i = 0; i < windowClients.length; i++) {
                     var client = windowClients[i];
                     //Wenn ja, fokussieren
                     if (client.url === actionUrl && 'focus' in client) {
+                        console.log('Focus existing one');
                         return client.focus();
                     }
                 }
                 
                 if (clients.openWindow) {
+                    console.log('Open new window');
                     return clients.openWindow(actionUrl);
                 }
             })
