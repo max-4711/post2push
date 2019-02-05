@@ -75,19 +75,17 @@ async function run() {
     var channelname = document.getElementById('subscribe_channelnameinput').value;
     var subscriptionsecret = document.getElementById('subscribe_channelsubscriptionsecret').value;
 
-    if (deliveryDetails === null || typeof deliveryDetails === 'undefined') {
-        console.log('deliveryDetails not set - unable to publish endpoint!');
-        return;
-    }
-
     if (channelname === '' || channelname === null || typeof channelname === 'undefined') {
         alert('Please enter a channel name!');
         return;
     }
-
     const letters = /^[0-9a-zA-Z]+$/;
     if (!channelname.match(letters)) {
         alert('Name contains illegal characters, only a-Z and 0-9 are allowed!');
+        return;
+    }
+    if (clientToken === '' || clientToken === null || typeof clientToken === 'undefined') {
+        alert('Something went wrong when initializing the client (no client token set). Please refresh this site and try again.');
         return;
     }
 
@@ -96,14 +94,14 @@ async function run() {
 
     var subscription = {
         ChannelName: channelname,
-        DeliveryDetails: deliveryDetails,
+        ClientToken: clientToken,
         ChannelSubscriptionSecret: subscriptionsecret
     };
 
     var labelobject = document.getElementById('subscribe_feedbackalert');
     var labelobjectclass = "alert alert-danger";
     
-    console.log('Registering push endpoint...');
+    console.log('Publishing subscription...');
 
     await fetch('https://PIPELINE_INSERT_APP_URL/subscriptions', {
         method: 'POST',
@@ -121,9 +119,9 @@ async function run() {
                 var responseJson = JSON.parse(text);
                 console.log('Saving endpoint to cookie...');
                 var cookie = getCookie(cookieName);
-                if (cookie === null || typeof cookie === 'undefined') {
+                if (cookie === null || typeof cookie === 'undefined' || cookie === '') {
                     console.log('No cookie found, creating new one...');
-                    var newCookie = [responseJson.SubscriptionToken];
+                    var newCookie = [clientToken, responseJson.SubscriptionToken];
                     var newCookieStringified = JSON.stringify(newCookie);
                     setCookie(cookieName, newCookieStringified, 1825);
                 }
@@ -132,7 +130,7 @@ async function run() {
                     var oldSubscriptionTokens = JSON.parse(cookie);
 
                     if (responseJson.SubscriptionToken !== null && typeof responseJson.SubscriptionToken !== 'undefined' && responseJson.SubscriptionToken !== '') {
-                        var newTokenIsAlreadyInList = (oldSubscriptionTokens.indexOf(responseJson.SubscriptionToken) > -1);
+                        var newTokenIsAlreadyInList = (oldSubscriptionTokens.indexOf(responseJson.SubscriptionToken) > 0);
                         if (!newTokenIsAlreadyInList) {
                             console.log('Token is indeed new and no duplicate subscription...');
                             oldSubscriptionTokens.push(responseJson.SubscriptionToken);
@@ -200,8 +198,7 @@ function initialize() {
     }
 }
 
-
-var deliveryDetails;
+var clientToken = '';
 var existingEndpointsUpdated = false;
 async function updateExistingEndpoints() {
     if (existingEndpointsUpdated) {
@@ -215,86 +212,144 @@ async function updateExistingEndpoints() {
         register('https://PIPELINE_INSERT_APP_URL/public/worker.js', { scope: '/post2push/public/' });
 
     console.log('Registering push...');
-    deliveryDetails = await registration.pushManager.subscribe({
+    var deliveryDetails = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        // The `urlBase64ToUint8Array()` function is the same as in
-        // https://www.npmjs.com/package/web-push#using-vapid-key-for-applicationserverkey
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
     });
     console.log('Push registered.');
 
-    var cookie = getCookie(cookieName);    
+    var cookie = getCookie(cookieName);
+    var registerEndpointTargetUrl = 'https://PIPELINE_INSERT_APP_URL/clients/';
+    var payload = {
+        DeliveryDetails: deliveryDetails
+    };
 
-    if (typeof cookie === 'undefined' || cookie === null) {
-        console.log('No cookie detected -> no endpoints need to be updated.');
-        document.getElementById("subscribebutton").disabled = false;
-        document.getElementById("apiupdatespinner").style.display = 'none';        
-        return;
-    }
+    if (typeof cookie === 'undefined' || cookie === null) {        
+        console.log('No cookie detected -> endpoint needs to be registered.');
 
-    var subscriptionTokens = JSON.parse(cookie);
-
-    if (subscriptionTokens === null || typeof subscriptionTokens === 'undefined' || subscriptionTokens.length === 0) {
-        console.log('No tokens in cookie ' + subscriptionTokens.length + ', no initialization needed.');
-        document.getElementById("subscribebutton").disabled = false;
-        document.getElementById("apiupdatespinner").style.display = 'none';
-        return;
-    }
-
-    console.log('Found ' + subscriptionTokens.length + ' tokens, for which endpoints will be updated...');
-    var validTokens = [];
-
-    var index = 0;
-    subscriptionTokens.forEach(function (subscriptionToken) {        
-        if (subscriptionToken === 'null' || subscriptionToken === null || typeof subscriptionToken === 'undefined' || subscriptionToken === '') {
-            console.log('Empty token detected, skipping to update that!');
-
-            index++;
-            if (index === subscriptionTokens.length) {
-                console.log('Done updating endpoints!');
-                document.getElementById("subscribebutton").disabled = false;
-                document.getElementById("apiupdatespinner").style.display = 'none';
-                //Hier lieber nicht neues Cookie persistieren; bei Netzwerkproblemen könnte sonst evtl gar kein Token mehr im Cookie sein (?)
-            }
-
-            return;
-        }
-        console.log('Updating endpoint for token ' + subscriptionToken + '...');
-
-        var targetUrl = 'https://PIPELINE_INSERT_APP_URL/subscriptions/' + subscriptionToken;
-        var payload = {
-            DeliveryDetails: deliveryDetails
-        };
-
-        fetch(targetUrl, {
-            method: 'PUT',
+        fetch(registerEndpointTargetUrl, {
+            method: 'POST',
             body: JSON.stringify(payload),
             headers: {
                 'content-type': 'application/json'
             }
-        }).then((res) => {
-            if (res.status !== '404' && res.status !== 404) {
-                var tokenIsAlreadyInList = (validTokens.indexOf(subscriptionToken) > -1);
-                if (!tokenIsAlreadyInList) {
-                    console.log('Token ' + subscriptionToken + ' is valid and is being persisted in cookie...');
-                    validTokens.push(subscriptionToken);
-                }
-            }
-
-            res.text().then((text) => {
-                console.log('Endpoint for token ' + subscriptionToken + ' updated: ' + text);
-                index++;
-                if (index === subscriptionTokens.length) {
-                    console.log('Done updating endpoints!');
+        }).then((response) => {
+            response.text().then((text) => {
+                console.log('Response: ' + text);
+                var tokensList;
+                if (response.ok) {
+                    var responseJson = JSON.parse(text);
+                    tokensList = [responseJson.ClientToken];
+                    clientToken = responseJson.ClientToken;
                     document.getElementById("subscribebutton").disabled = false;
                     document.getElementById("apiupdatespinner").style.display = 'none';
-
-                    console.log('Persisting ' + validTokens.length + ' still valid tokens in cookie...');
-                    var newCookieStringified = JSON.stringify(validTokens);
-                    setCookie(cookieName, newCookieStringified, 1825);
                 }
+                else {
+                    document.getElementById("nopushsupportwarning").innerText = "Something went wrong while sending the client data to the post2push api, please try again: " + text;
+                    document.getElementById("nopushsupportwarning").className = "alert alert-danger";
+                    document.getElementById("apiupdatespinner").style.display = 'none';
+                }
+                var tokensListStringified = JSON.stringify(tokensList);
+                setCookie(cookieName, tokensListStringified, 1825);
             });
         });
+
+        return;
+    }
+
+    var tokensList = JSON.parse(cookie); //Um Kompatibilität bei Migration zu wahren: 1. Token ist Client-Token, alle folgenden sind Subscription-Tokens
+
+    if (tokensList === null || typeof tokensList === 'undefined' || tokensList.length === 0) {
+        console.log('No tokens in cookie ' + clientTokens.length + ' -> endpoint needs to be registered.');
+
+        fetch(registerEndpointTargetUrl, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then((response) => {
+            response.text().then((text) => {
+                console.log('Response: ' + text);
+                if (response.ok) {
+                    var responseJson = JSON.parse(text);
+                    tokensList = [responseJson.ClientToken];
+                    clientToken = responseJson.ClientToken;
+                    document.getElementById("subscribebutton").disabled = false;
+                    document.getElementById("apiupdatespinner").style.display = 'none';
+                }
+                else {
+                    document.getElementById("nopushsupportwarning").innerText = "Something went wrong while sending the client data to the post2push api, please try again: " + text;
+                    document.getElementById("nopushsupportwarning").className = "alert alert-danger";
+                    document.getElementById("apiupdatespinner").style.display = 'none';
+                }
+                var tokensListStringified = JSON.stringify(tokensList);
+                setCookie(cookieName, tokensListStringified, 1825);
+            });
+        });
+        return;
+    }
+    console.log('Found ' + tokensList.length + ' tokens -> updating endpoint...');
+
+    clientToken = tokensList[0];
+    console.log('Client token is ' + clientToken);
+
+    var updateEndpointTargetUrl = 'https://PIPELINE_INSERT_APP_URL/clients/' + clientToken;
+
+    fetch(updateEndpointTargetUrl, {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then((res) => {
+        if (res.status === '404' || res.status === 404) {
+            console.log('Endpoint not known to server; resetting cookie and registering new endpoint.');
+            tokensList = [];
+
+            fetch(registerEndpointTargetUrl, {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: {
+                    'content-type': 'application/json'
+                }
+            }).then((response) => {
+                response.text().then((text) => {
+                    console.log('Response: ' + text);
+                    if (response.ok) {
+                        var responseJson = JSON.parse(text);
+                        tokensList = [responseJson.ClientToken];
+                        clientToken = responseJson.ClientToken;
+                        document.getElementById("subscribebutton").disabled = false;
+                        document.getElementById("apiupdatespinner").style.display = 'none';    
+                    }
+                    else {
+                        document.getElementById("nopushsupportwarning").innerText = "Something went wrong while sending the client data to the post2push api, please try again: " + text;
+                        document.getElementById("nopushsupportwarning").className = "alert alert-danger";
+                        document.getElementById("apiupdatespinner").style.display = 'none';
+                    }
+                    var tokensListStringified = JSON.stringify(tokensList);
+                    setCookie(cookieName, tokensListStringified, 1825);
+                });
+            });
+        }
+        else {
+            res.text().then((text) => {
+                document.getElementById("subscribebutton").disabled = false;
+                document.getElementById("apiupdatespinner").style.display = 'none';
+                console.log('Endpoint for client token ' + clientToken + ' updated: ' + text);
+
+                console.log('List of locally stored subscription tokens:');
+                tokensList.forEach(function (token) {
+                    if (token === 'null' || token === null || typeof token === 'undefined' || token === '' || token === clientToken) {
+                        return;
+                        
+                        console.log(token);
+                    }
+                });
+                console.log('Init complete.');
+            });
+        }
     });
 }
 
@@ -369,7 +424,6 @@ async function posttochannel() {
     });
 }
 
-
 function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
 
@@ -386,8 +440,6 @@ function urlBase64ToUint8Array(base64String) {
 
     return outputArray;
 }
-
-
 function setCookie(name, value, days) {
     var expires = "";
     if (days) {

@@ -53,6 +53,9 @@
     <TypeScriptCompile Include="routes\channels.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="routes\clients.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="routes\get.ts" />
     <Content Include="public\api.html">
       <SubType>Code</SubType>
@@ -63,9 +66,6 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="public\success.png" />
-    <Content Include="public\test.html">
-      <SubType>Code</SubType>
-    </Content>
     <Content Include="tsconfig.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />
@@ -82,9 +82,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="public\client.js">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="public\testclient.js">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="public\worker.js">

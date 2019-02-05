@@ -29,13 +29,11 @@ router.get('/', (req: any, res: express.Response) => {
 });
 
 router.post('/', (req: any, res: express.Response) => {
-    var type = req.headers['content-type'];
-    if (type !== 'application/json') {
+    if (req.headers['content-type'] !== 'application/json') {
         req.connection.release();
         res.status(406).json({ 'Error': 'Only type application/json supported' }).end();
         return;
     }
-
     if (req.body.Name === null || typeof req.body.Name === 'undefined') {
         req.connection.release();
         res.status(400).json({ 'Error': 'Missing desired Name' }).end();
@@ -126,14 +124,11 @@ router.post('/', (req: any, res: express.Response) => {
 });
 
 router.post('/:name/push', (req: any, res: express.Response) => {
-    var type = req.headers['content-type'];
-
-    if (type !== 'application/json') {
+    if (req.headers['content-type'] !== 'application/json') {
         req.connection.release();
         res.status(406).json({ 'Error': 'Only type application/json supported' }).end();
         return;
     }
-
     if (req.params.name === null || typeof req.params.name === 'undefined') {
         req.connection.release();
         res.status(400).json({ 'Error': 'Missing name' }).end();
@@ -162,53 +157,49 @@ router.post('/:name/push', (req: any, res: express.Response) => {
         }
     }
 
+    //1. Channel suchen
     var getAffectedChannelQuery = 'SELECT name, push_secret, icon_url FROM channel WHERE name = ?';
     getAffectedChannelQuery = mysql.format(getAffectedChannelQuery, req.params.name);
-
     req.connection.query(getAffectedChannelQuery, function (err, channelRows) {
         if (err) {
             req.connection.release();
             res.status(500).json({ 'Error': 'Unknown database error' }).end();
             return;
         }
-
         if (channelRows.length === 0) {
             req.connection.release();
             res.status(400).json({ 'Error': 'Channel not existing' }).end();
             return;
         }
-
         if (channelRows[0].push_secret !== req.body.PushSecret) {
             req.connection.release();
             res.status(401).json({ 'Error': 'Invalid PushSecret' }).end();
             return;
         }
 
+        //2. Channel-Timestamp aktualisieren
         var updateChannelQuery = 'UPDATE channel SET last_push_timestamp = TIMESTAMP() WHERE name = ?';
         updateChannelQuery = mysql.format(updateChannelQuery, req.params.name);
-
         req.connection.query(getAffectedChannelQuery, function (err, channelRows) {
             if (err) {
                 req.connection.release();
                 res.status(500).json({ 'Error': 'Unknown database error' }).end();
                 return;
             }
-
             if (channelRows.length === 0) {
                 req.connection.release();
                 res.status(400).json({ 'Error': 'Channel not existing' }).end();
                 return;
             }
-
             if (channelRows[0].push_secret !== req.body.PushSecret) {
                 req.connection.release();
                 res.status(401).json({ 'Error': 'Invalid PushSecret' }).end();
                 return;
             }
 
-            var getReceiversQuery = 'SELECT token, delivery_details FROM subscription WHERE channel_name = ?';
+            //3. Betroffene Subscriptions/Clients ermitteln
+            var getReceiversQuery = 'SELECT cl.delivery_details AS cl_delivery_details, cl.token AS cl_token FROM client cl INNER JOIN subscription s ON cl.token = s.client_token WHERE s.channel_name = ?';
             getReceiversQuery = mysql.format(getReceiversQuery, req.params.name);
-
             req.connection.query(getReceiversQuery, function (err, receiverRows) {
                 req.connection.release();
                 if (err) {                    
@@ -236,7 +227,6 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                             ]
                         };
                     }
-
                 }
                 else {
                     if (req.body.ActionUrl === null || typeof req.body.ActionUrl === 'undefined' || req.body.ActionUrl === '') {
@@ -265,7 +255,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                 var errorsCounter = 0;
                 var index;
                 for (index = 0; index < receiverRows.length; index++) {
-                    var receiverData = JSON.parse(receiverRows[index].delivery_details);
+                    var receiverData = JSON.parse(receiverRows[index].cl_delivery_details);
                     webpush.sendNotification(receiverData, stringifiedPayload).catch(error => {
                         errorsCounter++;
                         console.error('Error while sending push notification: ' + error.stack);

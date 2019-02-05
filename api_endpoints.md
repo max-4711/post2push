@@ -83,6 +83,59 @@ __Remarks:__
 The server may also return additional information about the count of push notifications dispatched, including statistics about errors and/or successful deliveries. Please note, that these numbers -if provided- only reference delivery to the push notification provider, not to their endpoints.
 
 
+## POST /clients/
+__Description:__ Registers a new client (= receiver for push notifications)
+
+__Accepted content type:__ application/json
+
+__Parameters:__
+* DeliveryDetails: Object containing information about VAPID push notification delivery
+    * endpoint
+    * keys
+        * auth
+        * p256dh
+* Name (optional): View name for this client. Won't be programmatically evaluated. Maximum supported length is 50 characters.   
+
+__Returns:__
+* Error (if applicable): One sentence explaining what has gone wrong.
+* Message (if applicable): Confirmation client has been registered.
+* SubscriptionToken (if applicable): Token, which can be used to reference this client.
+
+__Remarks:__
+There can't exist two clients with the same DeliveryDetails, as this would result in double notifications. Trying to register two clients with the same DeliveryDetails will result in a database error, as the uniqueness of the DeliveryDetails is not checked before being passed to the database for performance reasons.
+
+
+## DELETE /clients/:token
+__Description:__ Deletes a client and all referencing subscriptions.
+
+__Parameters:__
+* token (in route): Token identifying the client
+
+__Returns:__
+* Error (if applicable): One sentence explaining what has gone wrong.
+* Message (if applicable): Confirmation client has been deleted.
+
+
+## PUT /clients/:token
+__Description:__ Updates the data of a client.
+
+__Parameters:__
+* token (in route): Token identifying the client
+* DeliveryDetails: Object containing information about VAPID push notification delivery
+    * endpoint
+    * keys
+        * auth
+        * p256dh
+* Name (optional): View name for this client. Won't be programmatically evaluated. Maximum supported length is 50 characters.   
+
+__Returns:__
+* Error (if applicable): One sentence explaining what has gone wrong.
+* Message (if applicable): Confirmation client has been updated.
+
+__Remarks:__
+There can't exist two clients with the same DeliveryDetails, as this would result in double notifications. Trying to update the DeliveryDetails of a client to the DeliveryDetails of another client will result in a database error, as the uniqueness of the DeliveryDetails is not checked before being passed to the database for performance reasons.
+
+
 ## POST /subscriptions/
 __Description:__ Creates a new subscription for a push channel.
 
@@ -90,21 +143,16 @@ __Accepted content type:__ application/json
 
 __Parameters:__
 * ChannelName: Name of the target push channel
-* DeliveryDetails: Object containing information about VAPID push notification delivery
-    * endpoint
-    * keys
-        * auth
-        * p256dh
+* ClientToken: Token of the client, which will get the push notifications of this subscription
 * ChannelSubscriptionSecret (if applicable): Secret as authentication for subscribing to the push channel. Can be nonexistent or up to 40 characters, just as configured upon channel creation.
-* Name (optional): View name for this subscription. Won't be programmatically evaluated. Maximum supported length is 50 characters.
 
 __Returns:__
 * Error (if applicable): One sentence explaining what has gone wrong.
-* Message (if applicable): Confirmation subscription has been created.
+* Message (if applicable): Confirmation subscription has been created (or already exists).
 * SubscriptionToken (if applicable): Token, which can be used to delete this subscription.
 
 __Remarks:__
-* If the endpoint already subscribed the channel, no new subscription will be created, as this would result in duplicate notifications.
+* If the endpoint already subscribed the channel, no new subscription will be created, but the SubscriptionToken of the existing subscription will be returned.
 * As confirmation and for testing purposes, a push notification will be sent to the configured endpoint.
 
 
@@ -117,21 +165,3 @@ __Parameters:__
 __Returns:__
 * Error (if applicable): One sentence explaining what has gone wrong.
 * Message (if applicable): Confirmation subscription has been deleted.
-
-
-## PUT /subscriptions/:token
-__Description:__ Updates the delivery details of a subscription.
-
-__Accepted content type:__ application/json
-
-__Parameters:__
-* token (in route): Token identifying the subscription
-* DeliveryDetails: Object containing updated information about VAPID push notification delivery
-    * endpoint
-    * keys
-        * auth
-        * p256dh
-
-__Returns:__
-* Error (if applicable): One sentence explaining what has gone wrong.
-* Message (if applicable): Confirmation subscription has been updated.

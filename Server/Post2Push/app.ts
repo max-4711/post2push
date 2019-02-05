@@ -5,6 +5,7 @@ import webpush = require('web-push');
 import AppConfiguration = require('./config/app.config');
 
 import baseEndpoints from './routes/get';
+import clientEndpoints from './routes/clients';
 import channelEndpoints from './routes/channels';
 import subscriptionEndpoints from './routes/subscriptions';
 
@@ -19,6 +20,7 @@ app.use(appConfig.baseRoute + '/public', express.static(path.join(__dirname, 'pu
 console.log("Configuring routes...");
 app.use(appConfig.baseRoute + '/', baseEndpoints);
 app.use(appConfig.baseRoute + '/channels', channelEndpoints);
+app.use(appConfig.baseRoute + '/clients', clientEndpoints);
 app.use(appConfig.baseRoute + '/subscriptions', subscriptionEndpoints);
 
 console.log("Setting up vapid...");

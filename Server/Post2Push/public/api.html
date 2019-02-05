@@ -93,12 +93,11 @@
         The server may also return additional information about the count of push notifications dispatched, including statistics about errors and/or successful deliveries. Please note, that these numbers -if provided- only reference delivery to the push notification provider, not to their endpoints.
     </p>
     <br />
-    <h2 id="post-subscriptions-">POST /subscriptions/</h2>
-    <p><strong>Description:</strong> Creates a new subscription for a push channel.</p>
+    <h2 id="post-clients-">POST /clients/</h2>
+    <p><strong>Description:</strong> Registers a new client (= receiver for push notifications)</p>
     <p><strong>Accepted content type:</strong> application/json</p>
     <p><strong>Parameters:</strong></p>
     <ul>
-        <li>ChannelName: Name of the target push channel</li>
         <li>
             DeliveryDetails: Object containing information about VAPID push notification delivery<ul>
                 <li>endpoint</li>
@@ -110,18 +109,77 @@
                 </li>
             </ul>
         </li>
-        <li>ChannelSubscriptionSecret (if applicable): Secret as authentication for subscribing to the push channel. Can be nonexistent or up to 40 characters, just as configured upon channel creation.</li>
-        <li>Name (optional): View name for this subscription. Won&#39;t be programmatically evaluated. Maximum supported length is 50 characters.</li>
+        <li>Name (optional): View name for this client. Won&#39;t be programmatically evaluated. Maximum supported length is 50 characters.   </li>
     </ul>
     <p><strong>Returns:</strong></p>
     <ul>
         <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
-        <li>Message (if applicable): Confirmation subscription has been created.</li>
+        <li>Message (if applicable): Confirmation client has been registered.</li>
+        <li>SubscriptionToken (if applicable): Token, which can be used to reference this client.</li>
+    </ul>
+    <p>
+        <strong>Remarks:</strong>
+        There can&#39;t exist two clients with the same DeliveryDetails, as this would result in double notifications. Trying to register two clients with the same DeliveryDetails will result in a database error, as the uniqueness of the DeliveryDetails is not checked before being passed to the database for performance reasons.
+    </p>
+    <br />
+    <h2 id="delete-clients-token">DELETE /clients/:token</h2>
+    <p><strong>Description:</strong> Deletes a client and all referencing subscriptions.</p>
+    <p><strong>Parameters:</strong></p>
+    <ul>
+        <li>token (in route): Token identifying the client</li>
+    </ul>
+    <p><strong>Returns:</strong></p>
+    <ul>
+        <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
+        <li>Message (if applicable): Confirmation client has been deleted.</li>
+    </ul>
+    <br />
+    <h2 id="put-clients-token">PUT /clients/:token</h2>
+    <p><strong>Description:</strong> Updates the data of a client.</p>
+    <p><strong>Parameters:</strong></p>
+    <ul>
+        <li>token (in route): Token identifying the client</li>
+        <li>
+            DeliveryDetails: Object containing information about VAPID push notification delivery<ul>
+                <li>endpoint</li>
+                <li>
+                    keys<ul>
+                        <li>auth</li>
+                        <li>p256dh</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>Name (optional): View name for this client. Won&#39;t be programmatically evaluated. Maximum supported length is 50 characters.   </li>
+    </ul>
+    <p><strong>Returns:</strong></p>
+    <ul>
+        <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
+        <li>Message (if applicable): Confirmation client has been updated.</li>
+    </ul>
+    <p>
+        <strong>Remarks:</strong>
+        There can&#39;t exist two clients with the same DeliveryDetails, as this would result in double notifications. Trying to update the DeliveryDetails of a client to the DeliveryDetails of another client will result in a database error, as the uniqueness of the DeliveryDetails is not checked before being passed to the database for performance reasons.
+    </p>
+    <br />
+    <h2 id="post-subscriptions-">POST /subscriptions/</h2>
+    <p><strong>Description:</strong> Creates a new subscription for a push channel.</p>
+    <p><strong>Accepted content type:</strong> application/json</p>
+    <p><strong>Parameters:</strong></p>
+    <ul>
+        <li>ChannelName: Name of the target push channel</li>
+        <li>ClientToken: Token of the client, which will get the push notifications of this subscription</li>
+        <li>ChannelSubscriptionSecret (if applicable): Secret as authentication for subscribing to the push channel. Can be nonexistent or up to 40 characters, just as configured upon channel creation.</li>
+    </ul>
+    <p><strong>Returns:</strong></p>
+    <ul>
+        <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
+        <li>Message (if applicable): Confirmation subscription has been created (or already exists).</li>
         <li>SubscriptionToken (if applicable): Token, which can be used to delete this subscription.</li>
     </ul>
     <p><strong>Remarks:</strong></p>
     <ul>
-        <li>If the endpoint already subscribed the channel, no new subscription will be created, as this would result in duplicate notifications.</li>
+        <li>If the endpoint already subscribed the channel, no new subscription will be created, but the SubscriptionToken of the existing subscription will be returned.</li>
         <li>As confirmation and for testing purposes, a push notification will be sent to the configured endpoint.</li>
     </ul>
     <br />
@@ -136,30 +194,5 @@
         <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
         <li>Message (if applicable): Confirmation subscription has been deleted.</li>
     </ul>
-    <br />
-    <h2 id="put-subscriptions-token">PUT /subscriptions/:token</h2>
-    <p><strong>Description:</strong> Updates the delivery details of a subscription.</p>
-    <p><strong>Accepted content type:</strong> application/json</p>
-    <p><strong>Parameters:</strong></p>
-    <ul>
-        <li>token (in route): Token identifying the subscription</li>
-        <li>
-            DeliveryDetails: Object containing updated information about VAPID push notification delivery<ul>
-                <li>endpoint</li>
-                <li>
-                    keys<ul>
-                        <li>auth</li>
-                        <li>p256dh</li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-    </ul>
-    <p><strong>Returns:</strong></p>
-    <ul>
-        <li>Error (if applicable): One sentence explaining what has gone wrong.</li>
-        <li>Message (if applicable): Confirmation subscription has been updated.</li>
-    </ul>
-
 </body>
 </html>
