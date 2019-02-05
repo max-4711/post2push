@@ -48,12 +48,12 @@ router.post('/', (req: any, res: express.Response) => {
     const iconurl = 'https://' + appConfig.applicationUrl + '/public/success.png'
 
     //1. Prüfen auf doppelte Subscription
-    var getSubcriptionClonesQuery = 'SELECT token, modification_timestamp FROM subscription WHERE channel_name = ? AND client_token = ?';
+    var getSubcriptionClonesQuery = 'SELECT token, channel_name FROM subscription WHERE channel_name = ? AND client_token = ?';
     getSubcriptionClonesQuery = mysql.format(getSubcriptionClonesQuery, [req.body.ChannelName, req.body.ClientToken]);
     req.connection.query(getSubcriptionClonesQuery, function (err, subscriptionRows) {
         if (err) {
             req.connection.release();
-            res.status(500).json({ 'Error': 'Unknown database error' }).end();
+            res.status(500).json({ 'Error': 'Unknown database error ' }).end();
             return;
         }
 

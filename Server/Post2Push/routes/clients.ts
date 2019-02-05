@@ -46,8 +46,8 @@ router.post('/', (req: any, res: express.Response) => {
 
     var createClientQuery = '';
     if (req.body.Name === null || typeof req.body.Name === 'undefined') {        
-        createClientQuery = 'INSERT INTO client (token, delivery_details) VALUES (?,?)';
-        createClientQuery = mysql.format(createClientQuery, [clientToken, deliveryDetailsStringified]);
+        createClientQuery = 'INSERT INTO client (token, delivery_details, delivery_details_hash) VALUES (?,?, SHA2(?, 256))';
+        createClientQuery = mysql.format(createClientQuery, [clientToken, deliveryDetailsStringified, deliveryDetailsStringified]);
     }
     else {
         if (req.body.Name.length > 50) {
@@ -56,8 +56,8 @@ router.post('/', (req: any, res: express.Response) => {
             return;
         }
 
-        createClientQuery = 'INSERT INTO client (token, name, delivery_details) VALUES (?, ?, ?)';
-        createClientQuery = mysql.format(createClientQuery, [clientToken, req.body.Name, deliveryDetailsStringified]);
+        createClientQuery = 'INSERT INTO client (token, name, delivery_details, delivery_details_hash) VALUES (?, ?, ?, SHA2(?, 256))';
+        createClientQuery = mysql.format(createClientQuery, [clientToken, req.body.Name, deliveryDetailsStringified, deliveryDetailsStringified]);
     }
 
     req.connection.query(createClientQuery, function (err, result) {
@@ -144,12 +144,12 @@ router.put('/:token', (req: any, res: express.Response) => {
             return;
         }
 
-        updateClientQuery = 'UPDATE client SET delivery_details = ?, Name = ? WHERE token = ?';
-        updateClientQuery = mysql.format(updateClientQuery, [deliveryDetailsStringified, req.body.Name, req.params.token]);
+        updateClientQuery = 'UPDATE client SET delivery_details = ?, delivery_details_hash = SHA2(?, 256), Name = ? WHERE token = ?';
+        updateClientQuery = mysql.format(updateClientQuery, [deliveryDetailsStringified, deliveryDetailsStringified, req.body.Name, req.params.token]);
     }
     else {
-        updateClientQuery = 'UPDATE client SET delivery_details = ? WHERE token = ?';
-        updateClientQuery = mysql.format(updateClientQuery, [deliveryDetailsStringified, req.params.token]);    
+        updateClientQuery = 'UPDATE client SET delivery_details = ?, delivery_details_hash = SHA2(?, 256) WHERE token = ?';
+        updateClientQuery = mysql.format(updateClientQuery, [deliveryDetailsStringified, deliveryDetailsStringified, req.params.token]);    
     }
 
     req.connection.query(updateClientQuery, function (err, result) {

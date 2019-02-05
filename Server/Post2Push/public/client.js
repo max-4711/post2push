@@ -204,8 +204,7 @@ async function updateExistingEndpoints() {
     if (existingEndpointsUpdated) {
         console.log('Init already done, skipping.');
         return;        
-    }
-    existingEndpointsUpdated = true;
+    }    
 
     console.log('Registering service worker...');
     const registration = await navigator.serviceWorker.
@@ -216,6 +215,7 @@ async function updateExistingEndpoints() {
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
     });
+    existingEndpointsUpdated = true;
     console.log('Push registered.');
 
     var cookie = getCookie(cookieName);

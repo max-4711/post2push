@@ -16,6 +16,7 @@ CREATE TABLE `client`
     ( `token`                   CHAR(45)        NOT NULL COMMENT 'Einzigartiges Client-Token',
       `name`                    VARCHAR(50)     NULL COMMENT 'Optionaler Anzeigename dieses Clients',
       `delivery_details`        TEXT            NOT NULL COMMENT 'JSON-Objekt mit allen Informationen, die benötigt werden, um Push-Benachrichtigungen an den Client zuzustellen',
+      `delivery_details_hash`   CHAR(64)        NOT NULL COMMENT 'SHA2-Hash von delivery_details zwecks Uniqueness-Prüfung',
       `modification_timestamp`  TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Zeitpunkt, an der Datensatz zuletzt bearbeitet wurde',
       PRIMARY KEY (`token`)
     ) ENGINE = InnoDB COMMENT = 'Enthält sämtliche Clients';
@@ -37,8 +38,12 @@ ALTER TABLE `subscription`
     FOREIGN KEY (`client_token`) REFERENCES `client`(`token`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `client`
-    ADD CONSTRAINT `uk_client_delivery_details`
-    UNIQUE (`delivery_details`);
+    ADD CONSTRAINT `uk_client_delivery_details_hash`
+    UNIQUE (`delivery_details_hash`);
+
+ALTER TABLE `client`
+    ADD CONSTRAINT `uk_client_channel_client`
+    UNIQUE (`channel_name`, `client_token`);
 
 INSERT INTO `channel` (`name`       , `push_secret`          , `icon_url`                                                , `subscription_secret`   )
 VALUES                ('TestChannel', 'TestChannelPushSecret', 'https://api.studio-4711.com/post2push/public/success.png', 'TestSubscriptionSecret')
