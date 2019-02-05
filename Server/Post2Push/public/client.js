@@ -363,7 +363,7 @@ async function posttochannel() {
     var postsecret = document.getElementById('post_channelpushsecret').value;
     var messagetitle = document.getElementById('post_messagetitle').value;
     var messagecontent = document.getElementById('post_messagecontent').value;
-    var messageispersistent = document.getElementById('post_ispersistent').value;
+    var messageispersistent = document.getElementById('post_ispersistent').checked;
     var messagelink = document.getElementById('post_messagelink').value;
 
     if (channelname === '' || channelname === null || typeof channelname === 'undefined') {
