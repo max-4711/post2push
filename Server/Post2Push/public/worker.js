@@ -7,7 +7,7 @@ self.addEventListener('push', ev => {
     if (data.icon !== null && typeof data.icon !== 'undefined') {
         if (data.actions !== null && typeof data.actions !== 'undefined') {
             console.log('Showing notification with icon and actions');
-            self.registration.showNotification(data.title, {
+            return self.registration.showNotification(data.title, {
                 body: data.body,
                 icon: data.icon,
                 requireInteraction: data.requireInteraction,
@@ -16,7 +16,7 @@ self.addEventListener('push', ev => {
         }
         else {
             console.log('Showing notification with icon');
-            self.registration.showNotification(data.title, {
+            return self.registration.showNotification(data.title, {
                 body: data.body,
                 icon: data.icon,
                 requireInteraction: data.requireInteraction
@@ -26,7 +26,7 @@ self.addEventListener('push', ev => {
     else {
         if (data.actions !== null && typeof data.actions !== 'undefined') {
             console.log('Showing notification with actions');
-            self.registration.showNotification(data.title, {
+            return self.registration.showNotification(data.title, {
                 body: data.body,
                 requireInteraction: data.requireInteraction,
                 actions: data.actions
@@ -34,7 +34,7 @@ self.addEventListener('push', ev => {
         }
         else {
             console.log('Showing plain notification');
-            self.registration.showNotification(data.title,
+            return self.registration.showNotification(data.title,
             {
                 body: data.body,
                 requireInteraction: data.requireInteraction
