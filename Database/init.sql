@@ -41,8 +41,8 @@ ALTER TABLE `client`
     ADD CONSTRAINT `uk_client_delivery_details_hash`
     UNIQUE (`delivery_details_hash`);
 
-ALTER TABLE `client`
-    ADD CONSTRAINT `uk_client_channel_client`
+ALTER TABLE `subscription`
+    ADD CONSTRAINT `uk_subscription_channel_client`
     UNIQUE (`channel_name`, `client_token`);
 
 INSERT INTO `channel` (`name`       , `push_secret`          , `icon_url`                                                , `subscription_secret`   )

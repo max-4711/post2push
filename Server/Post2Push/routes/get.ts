@@ -37,7 +37,6 @@ router.delete('/', (req: any, res: express.Response) => {
     }
 
     var subscriptionsQuery = "DELETE FROM subscription WHERE modification_timestamp < (NOW() - INTERVAL 1095 DAY) OR channel_name = 'TestChannel'";
-
     req.connection.query(subscriptionsQuery, function (err, subscriptionsResult) { 
         if (err) {
             req.connection.release();
@@ -46,19 +45,29 @@ router.delete('/', (req: any, res: express.Response) => {
         }
 
         var channelsQuery = "DELETE FROM channel WHERE last_push_timestamp < (NOW() - INTERVAL 365 DAY) AND name <> 'TestChannel'";
-
         req.connection.query(channelsQuery, function (err, channelsResult) {
-            req.connection.release();
-
             if (err) {
+                req.connection.release();
                 res.status(500).json({ 'Error': 'Unknown database error' }).end();
                 return;
             }
 
-            let totalAffectedRows = subscriptionsResult.affectedRows + channelsResult.affectedRows;
-            let message = totalAffectedRows + ' database rows purged.'
+            var clientsQuery = "DELETE FROM client cl WHERE NOT EXISTS (SELECT 1 FROM subscription s WHERE s.client_token = cl.token) AND modification_timestamp < (NOW() - INTERVAL 1 DAY)"
+            req.connection.query(clientsQuery, function (err, clientsResult) {
+                req.connection.release();
 
-            res.status(200).json({ 'Message': message });
+                if (err) {
+                    res.status(500).json({ 'Error': 'Unknown database error' }).end();
+                    return;
+                }
+
+                let totalAffectedRows = subscriptionsResult.affectedRows + channelsResult.affectedRows + clientsResult.affectedRows;
+                let message = totalAffectedRows + ' database rows purged.'
+
+                res.status(200).json({ 'Message': message });
+            });
+
+
         });
     });
 });
