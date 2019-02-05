@@ -144,11 +144,11 @@ router.put('/:token', (req: any, res: express.Response) => {
             return;
         }
 
-        updateClientQuery = 'UPDATE client SET DeliveryDetails = ?, Name = ? WHERE token = ?';
+        updateClientQuery = 'UPDATE client SET delivery_details = ?, Name = ? WHERE token = ?';
         updateClientQuery = mysql.format(updateClientQuery, [deliveryDetailsStringified, req.body.Name, req.params.token]);
     }
     else {
-        updateClientQuery = 'UPDATE client SET DeliveryDetails = ? WHERE token = ?';
+        updateClientQuery = 'UPDATE client SET delivery_details = ? WHERE token = ?';
         updateClientQuery = mysql.format(updateClientQuery, [deliveryDetailsStringified, req.params.token]);    
     }
 
