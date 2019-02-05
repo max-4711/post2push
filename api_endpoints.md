@@ -7,7 +7,12 @@ __Description:__ Can be used as indicator for availability of the post2push serv
 
 
 ## DELETE /
-__Description:__ Initiates a cleanup mechanism: Subscriptions with delivery details not updated for 3 years and channels not used for at least 365 days (and their subscriptions) will be purged from the database.
+__Description:__ 
+The following database entries will be deleted:
+* Subscriptions with delivery details not updated for 3 years
+* Subscriptions of the TestChannel
+* Channels not used for at least 365 (and their subscriptions), except the TestChannel
+* Clients with no subscriptions and last modification more than 1 day in the past.
 
 __Parameters:__
 * ChannelCreationSecret: Secret configured in app.config.js in order to prove to be authorized to delete channels.
