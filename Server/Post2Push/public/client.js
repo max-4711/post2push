@@ -216,7 +216,7 @@ async function updateExistingEndpoints() {
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
     });
     existingEndpointsUpdated = true;
-    console.log('Push registered.');
+    console.log('Push registered. Init considered to be done.');
 
     var cookie = getCookie(cookieName);
     var registerEndpointTargetUrl = 'https://PIPELINE_INSERT_APP_URL/clients/';
@@ -224,7 +224,7 @@ async function updateExistingEndpoints() {
         DeliveryDetails: deliveryDetails
     };
 
-    if (typeof cookie === 'undefined' || cookie === null) {        
+    if (typeof cookie === 'undefined' || cookie === null || cookie == '') {        
         console.log('No cookie detected -> endpoint needs to be registered.');
 
         fetch(registerEndpointTargetUrl, {
@@ -251,6 +251,7 @@ async function updateExistingEndpoints() {
                 }
                 var tokensListStringified = JSON.stringify(tokensList);
                 setCookie(cookieName, tokensListStringified, 1825);
+                console.log('Token list ' + tokensList + 'persisted in cookie, init completed.');
             });
         });
 
@@ -285,11 +286,12 @@ async function updateExistingEndpoints() {
                 }
                 var tokensListStringified = JSON.stringify(tokensList);
                 setCookie(cookieName, tokensListStringified, 1825);
+                console.log('Token list ' + tokensList + 'persisted in cookie, init completed.');
             });
         });
         return;
     }
-    console.log('Found ' + tokensList.length + ' tokens -> updating endpoint...');
+    console.log('Found ' + tokensList.length + ' tokens (first of them is the client token) -> updating endpoint...');
 
     clientToken = tokensList[0];
     console.log('Client token is ' + clientToken);
@@ -304,7 +306,7 @@ async function updateExistingEndpoints() {
         }
     }).then((res) => {
         if (res.status === '404' || res.status === 404) {
-            console.log('Endpoint not known to server; resetting cookie and registering new endpoint.');
+            console.log('Server is not aware of client token; resetting cookie and registering new endpoint.');
             tokensList = [];
 
             fetch(registerEndpointTargetUrl, {
@@ -330,6 +332,7 @@ async function updateExistingEndpoints() {
                     }
                     var tokensListStringified = JSON.stringify(tokensList);
                     setCookie(cookieName, tokensListStringified, 1825);
+                    console.log('Token list ' + tokensList + ' persisted, init complete.');
                 });
             });
         }
@@ -341,9 +344,7 @@ async function updateExistingEndpoints() {
 
                 console.log('List of locally stored subscription tokens:');
                 tokensList.forEach(function (token) {
-                    if (token === 'null' || token === null || typeof token === 'undefined' || token === '' || token === clientToken) {
-                        return;
-                        
+                    if (token !== 'null' && token !== null && typeof token !== 'undefined' && token !== '' && token !== clientToken) {                        
                         console.log(token);
                     }
                 });
@@ -362,6 +363,8 @@ async function posttochannel() {
     var postsecret = document.getElementById('post_channelpushsecret').value;
     var messagetitle = document.getElementById('post_messagetitle').value;
     var messagecontent = document.getElementById('post_messagecontent').value;
+    var messageispersistent = document.getElementById('post_ispersistent').value;
+    var messagelink = document.getElementById('post_messagelink').value;
 
     if (channelname === '' || channelname === null || typeof channelname === 'undefined') {
         alert('Please enter a channel name!');        
@@ -395,8 +398,13 @@ async function posttochannel() {
     var payload = {
         PushSecret: postsecret,
         MessageTitle: messagetitle,
-        MessageContent: messagecontent
+        MessageContent: messagecontent,
+        MessageIsPersistent: messageispersistent
     };
+
+    if (messagelink !== '' && messagelink !== null && typeof messagelink !== 'undefined') {
+        payload.ActionUrl = messagelink;
+    }
 
     var alertClassName = "alert alert-danger";
     var posturl = 'https://PIPELINE_INSERT_APP_URL/channels/' + channelname + '/push';
