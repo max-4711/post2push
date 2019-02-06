@@ -157,6 +157,17 @@ router.post('/:name/push', (req: any, res: express.Response) => {
         }
     }
 
+    let ttlMinutes = 4320; //3 Tage
+    if (req.body.MessageTtl !== null && typeof req.body.MessageTtl === 'number') {
+        if (req.body.MessageTtl > 0 && req.body.MessageTtl < 40321) { //Maximum: 28 Tage
+            ttlMinutes = req.body.MessageTtl
+        }
+    }
+    let ttlSeconds = ttlMinutes * 60;
+    var pushOptions = {
+        TTL: ttlSeconds
+    }
+
     //1. Channel suchen
     var getAffectedChannelQuery = 'SELECT push_secret, icon_url FROM channel WHERE name = ?';
     getAffectedChannelQuery = mysql.format(getAffectedChannelQuery, req.params.name);
@@ -256,7 +267,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                 var index;
                 for (index = 0; index < receiverRows.length; index++) {
                     var receiverData = JSON.parse(receiverRows[index].cl_delivery_details);
-                    webpush.sendNotification(receiverData, stringifiedPayload).catch(error => {
+                    webpush.sendNotification(receiverData, stringifiedPayload, pushOptions).catch(error => {
                         errorsCounter++;
                         console.error('Error while sending push notification: ' + error.stack);
                     })

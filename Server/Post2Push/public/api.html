@@ -91,6 +91,7 @@
         <li>PushSecret: Secret in order to prove to be authorized to push to this channel.</li>
         <li>MessageIsPersistent (optional): boolean, which prevents the notification from automatically disappearing after a while, if set to true. Defaults to false and may not be supported by all receivers.</li>
         <li>ActionUrl (optional): Extends the notification by a button which will cause the passed URL to be opened, if the user clicks on it. May not be supported by all receivers.</li>
+        <li>MessageTtl (optional): Number of minutes a notification is tried to be delivered, if the receiver is offline. Defaults to 4320 (3 days).</li>
     </ul>
     <p><strong>Returns:</strong></p>
     <ul>

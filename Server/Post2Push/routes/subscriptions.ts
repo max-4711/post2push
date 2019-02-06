@@ -73,7 +73,10 @@ router.post('/', (req: any, res: express.Response) => {
 
                 let payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert. Wirklich.', icon: iconurl });
                 let deliveryDetails = JSON.parse(receiverRows[0].delivery_details);
-                webpush.sendNotification(deliveryDetails, payload).catch(error => {
+                var pushOptions = {
+                    TTL: 3600
+                };
+                webpush.sendNotification(deliveryDetails, payload, pushOptions).catch(error => {
                     console.error('Error while sending push notification: ' + error.stack);
                 });                
             });
@@ -140,7 +143,10 @@ router.post('/', (req: any, res: express.Response) => {
 
                     let payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert.', icon: iconurl });
                     let deliveryDetails = JSON.parse(receiverRows[0].delivery_details);
-                    webpush.sendNotification(deliveryDetails, payload).catch(error => {
+                    var pushOptions = {
+                        TTL: 3600
+                    };
+                    webpush.sendNotification(deliveryDetails, payload, pushOptions).catch(error => {
                         console.error('Error while sending push notification: ' + error.stack);
                     });
                 });
