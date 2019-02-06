@@ -49,8 +49,7 @@ self.addEventListener('notificationclick', e => {
     var action = e.action;
 
     if (action === null || typeof action === 'undefined' || action === '') {
-        console.log('No action, just closing');
-        notification.close();
+        console.log('No action, doing nothing');        
     } 
     else if (action === 'dismiss') {
         console.log('Dismiss clicked');
