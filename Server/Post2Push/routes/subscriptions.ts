@@ -61,7 +61,6 @@ router.post('/', (req: any, res: express.Response) => {
             //2a. ClientDeliveryDetails ermitteln, senden, fertig
             var getClientDeliveryDetails = 'SELECT delivery_details FROM client WHERE token = ?';
             getClientDeliveryDetails = mysql.format(getClientDeliveryDetails, req.body.ClientToken);
-
             req.connection.query(getClientDeliveryDetails, function (err, receiverRows) {
                 req.connection.release();
 
@@ -76,9 +75,9 @@ router.post('/', (req: any, res: express.Response) => {
                 let deliveryDetails = JSON.parse(receiverRows[0].delivery_details);
                 webpush.sendNotification(deliveryDetails, payload).catch(error => {
                     console.error('Error while sending push notification: ' + error.stack);
-                });
-                return;
+                });                
             });
+            return;
         }
 
         //Subscription existiert noch nicht (-> Prüfung notwendig: Existieren Channel und Client?)
