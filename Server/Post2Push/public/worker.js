@@ -48,10 +48,15 @@ self.addEventListener('notificationclick', e => {
     var notification = e.notification;
     var action = e.action;
 
-    if (action === 'dismiss') {
-        console.log('Closing notification');
+    if (action === null || typeof action === 'undefined' || action === '') {
+        console.log('No action, just closing');
         notification.close();
-    } else {
+    } 
+    else if (action === 'dismiss') {
+        console.log('Dismiss clicked');
+        notification.close();
+    }
+    else {
         var actionUrl = action;
         notification.close();
         e.waitUntil(
