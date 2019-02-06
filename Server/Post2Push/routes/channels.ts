@@ -158,7 +158,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
     }
 
     //1. Channel suchen
-    var getAffectedChannelQuery = 'SELECT name, push_secret, icon_url FROM channel WHERE name = ?';
+    var getAffectedChannelQuery = 'SELECT push_secret, icon_url FROM channel WHERE name = ?';
     getAffectedChannelQuery = mysql.format(getAffectedChannelQuery, req.params.name);
     req.connection.query(getAffectedChannelQuery, function (err, channelRows) {
         if (err) {
@@ -198,7 +198,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
             }
 
             //3. Betroffene Subscriptions/Clients ermitteln
-            var getReceiversQuery = 'SELECT cl.delivery_details AS cl_delivery_details, cl.token AS cl_token FROM client cl INNER JOIN subscription s ON cl.token = s.client_token WHERE s.channel_name = ?';
+            var getReceiversQuery = 'SELECT cl.delivery_details AS cl_delivery_details FROM client cl INNER JOIN subscription s ON cl.token = s.client_token WHERE s.channel_name = ?';
             getReceiversQuery = mysql.format(getReceiversQuery, req.params.name);
             req.connection.query(getReceiversQuery, function (err, receiverRows) {
                 req.connection.release();

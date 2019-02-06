@@ -1,11 +1,13 @@
 # post2push API endpoints
 
+<br /><br />
 ## Base route: PIPELINE_INSERT_APP_URL/
 
+<br /><br />
 ## GET /
 __Description:__ Can be used as indicator for availability of the post2push service.
 
-
+<br /><br />
 ## DELETE /
 __Description:__ 
 The following database entries will be deleted:
@@ -22,6 +24,7 @@ __Returns:__
 * Message (if applicable): Confirmation for channel deletion, including the number of affected database rows.
 
 
+<br /><br />
 ## POST /channels/
 __Description:__ Creates a new push channel.
 
@@ -39,6 +42,7 @@ __Returns:__
 * PushSecret (if applicable): Secret, which will be needed in order to push messages to the channel.
 
 
+<br /><br />
 ## PUT /channels/:name
 __Description:__ Updates IconUrl and SubscriptionSecret of an existing channel.
 
@@ -55,6 +59,7 @@ __Returns:__
 * Message (if applicable): Confirmation for channel creation, if no error has occurred.
 
 
+<br /><br />
 ## DELETE /channels/:name
 __Description:__ Deletes a push channel.
 
@@ -67,6 +72,7 @@ __Returns:__
 * Message (if applicable): Confirmation channel has been deleted.
 
 
+<br /><br />
 ## POST /channels/:name/push
 __Description:__ Sends a message into a push channel.
 
@@ -88,6 +94,7 @@ __Remarks:__
 The server may also return additional information about the count of push notifications dispatched, including statistics about errors and/or successful deliveries. Please note, that these numbers -if provided- only reference delivery to the push notification provider, not to their endpoints.
 
 
+<br /><br />
 ## POST /clients/
 __Description:__ Registers a new client (= receiver for push notifications)
 
@@ -104,28 +111,41 @@ __Parameters:__
 __Returns:__
 * Error (if applicable): One sentence explaining what has gone wrong.
 * Message (if applicable): Confirmation client has been registered.
-* SubscriptionToken (if applicable): Token, which can be used to reference this client.
+* ClientToken (if applicable): Token, which can be used to reference this client.
 
 __Remarks:__
-There can't exist two clients with the same DeliveryDetails, as this would result in double notifications. Trying to register two clients with the same DeliveryDetails will result in a database error, as the uniqueness of the DeliveryDetails is not checked before being passed to the database for performance reasons.
+There can't exist two clients with the same DeliveryDetails, as this would result in double notifications. Trying to register a client with existing delivery details will return the token of the first one.
+
+<br /><br />
+## GET /clients/:token
+__Description:__ Views information about a client
+
+__Parameters:__
+* token (in route): Token uniquely identifying the client
+
+__Returns:__
+* Error (if applicable): One sentence explaining what has gone wrong.
+* Subscriptions: List of all tokens of subscriptions the client has made
 
 
+<br /><br />
 ## DELETE /clients/:token
 __Description:__ Deletes a client and all referencing subscriptions.
 
 __Parameters:__
-* token (in route): Token identifying the client
+* token (in route): Token uniquely identifying the client
 
 __Returns:__
 * Error (if applicable): One sentence explaining what has gone wrong.
 * Message (if applicable): Confirmation client has been deleted.
 
 
+<br /><br />
 ## PUT /clients/:token
 __Description:__ Updates the data of a client.
 
 __Parameters:__
-* token (in route): Token identifying the client
+* token (in route): Token uniquely identifying the client
 * DeliveryDetails: Object containing information about VAPID push notification delivery
     * endpoint
     * keys
@@ -138,9 +158,10 @@ __Returns:__
 * Message (if applicable): Confirmation client has been updated.
 
 __Remarks:__
-There can't exist two clients with the same DeliveryDetails, as this would result in double notifications. Trying to update the DeliveryDetails of a client to the DeliveryDetails of another client will result in a database error, as the uniqueness of the DeliveryDetails is not checked before being passed to the database for performance reasons.
+There can't exist two clients with the same DeliveryDetails, as this would result in double notifications. Trying to update the DeliveryDetails of a client to the DeliveryDetails of another client will result in an error.
 
 
+<br /><br />
 ## POST /subscriptions/
 __Description:__ Creates a new subscription for a push channel.
 
@@ -161,6 +182,7 @@ __Remarks:__
 * As confirmation and for testing purposes, a push notification will be sent to the configured endpoint.
 
 
+<br /><br />
 ## DELETE /subscriptions/:token
 __Description:__ Deletes a subscription.
 

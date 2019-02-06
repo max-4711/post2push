@@ -48,7 +48,7 @@ router.post('/', (req: any, res: express.Response) => {
     const iconurl = 'https://' + appConfig.applicationUrl + '/public/success.png'
 
     //1. Prüfen auf doppelte Subscription
-    var getSubcriptionClonesQuery = 'SELECT token, channel_name FROM subscription WHERE channel_name = ? AND client_token = ?';
+    var getSubcriptionClonesQuery = 'SELECT token FROM subscription WHERE channel_name = ? AND client_token = ?';
     getSubcriptionClonesQuery = mysql.format(getSubcriptionClonesQuery, [req.body.ChannelName, req.body.ClientToken]);
     req.connection.query(getSubcriptionClonesQuery, function (err, subscriptionRows) {
         if (err) {
@@ -59,7 +59,7 @@ router.post('/', (req: any, res: express.Response) => {
 
         if (subscriptionRows.length !== 0) { //Subscription existiert schon (-> dank FK sicher: Channel und Client existieren)
             //2a. ClientDeliveryDetails ermitteln, senden, fertig
-            var getClientDeliveryDetails = 'SELECT token, delivery_details FROM client WHERE token = ?';
+            var getClientDeliveryDetails = 'SELECT delivery_details FROM client WHERE token = ?';
             getClientDeliveryDetails = mysql.format(getClientDeliveryDetails, req.body.ClientToken);
 
             req.connection.query(getClientDeliveryDetails, function (err, receiverRows) {
@@ -72,8 +72,9 @@ router.post('/', (req: any, res: express.Response) => {
 
                 res.status(200).json({ 'Message': 'Subscription already present!', 'SubscriptionToken': subscriptionRows[0].token }).end();
 
-                var payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert. Wirklich.', icon: iconurl });
-                webpush.sendNotification(receiverRows[0].delivery_details, payload).catch(error => {
+                let payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert. Wirklich.', icon: iconurl });
+                let deliveryDetails = JSON.parse(receiverRows[0].delivery_details);
+                webpush.sendNotification(deliveryDetails, payload).catch(error => {
                     console.error('Error while sending push notification: ' + error.stack);
                 });
                 return;
@@ -82,7 +83,7 @@ router.post('/', (req: any, res: express.Response) => {
 
         //Subscription existiert noch nicht (-> Prüfung notwendig: Existieren Channel und Client?)
         //2b. Channel ermitteln
-        var getAffectedChannelQuery = 'SELECT name, subscription_secret FROM channel WHERE name = ?';
+        var getAffectedChannelQuery = 'SELECT subscription_secret FROM channel WHERE name = ?';
         getAffectedChannelQuery = mysql.format(getAffectedChannelQuery, req.body.ChannelName);
         req.connection.query(getAffectedChannelQuery, function (err, channelRows) {
             if (err) {
@@ -106,7 +107,7 @@ router.post('/', (req: any, res: express.Response) => {
             }
 
             //3b. ClientDeliveryDetails ermitteln
-            var getClientDeliveryDetails = 'SELECT token, delivery_details FROM client WHERE token = ?';
+            var getClientDeliveryDetails = 'SELECT delivery_details FROM client WHERE token = ?';
             getClientDeliveryDetails = mysql.format(getClientDeliveryDetails, req.body.ClientToken);
             req.connection.query(getClientDeliveryDetails, function (err, receiverRows) {
                 if (err) {
@@ -138,8 +139,9 @@ router.post('/', (req: any, res: express.Response) => {
 
                     res.status(201).json({ 'Message': 'Subscription created', 'SubscriptionToken': subscriptionToken }).end();
 
-                    var payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert.', icon: iconurl });
-                    webpush.sendNotification(receiverRows[0].delivery_details, payload).catch(error => {
+                    let payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert.', icon: iconurl });
+                    let deliveryDetails = JSON.parse(receiverRows[0].delivery_details);
+                    webpush.sendNotification(deliveryDetails, payload).catch(error => {
                         console.error('Error while sending push notification: ' + error.stack);
                     });
                 });
