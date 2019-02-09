@@ -1,41 +1,43 @@
 ﻿console.log('Loaded service worker!');
 
 self.addEventListener('push', ev => {
-    const data = ev.data.json();
+    const showNotificationPromise = new Promise((resolve, reject) => {
+        const data = ev.data.json();
 
-    if (data.icon !== null && typeof data.icon !== 'undefined') {
-        if (data.actions !== null && typeof data.actions !== 'undefined') {
-            return self.registration.showNotification(data.title, {
-                body: data.body,
-                icon: data.icon,
-                requireInteraction: data.requireInteraction,
-                actions: data.actions
-            });
+        if (data.icon !== null && typeof data.icon !== 'undefined') {
+            if (data.actions !== null && typeof data.actions !== 'undefined') {
+                return self.registration.showNotification(data.title, {
+                    body: data.body,
+                    icon: data.icon,
+                    requireInteraction: data.requireInteraction,
+                    actions: data.actions
+                });
+            }
+            else {
+                return self.registration.showNotification(data.title, {
+                    body: data.body,
+                    icon: data.icon,
+                    requireInteraction: data.requireInteraction
+                });
+            }
         }
         else {
-            return self.registration.showNotification(data.title, {
-                body: data.body,
-                icon: data.icon,
-                requireInteraction: data.requireInteraction
-            });
+            if (data.actions !== null && typeof data.actions !== 'undefined') {
+                return self.registration.showNotification(data.title, {
+                    body: data.body,
+                    requireInteraction: data.requireInteraction,
+                    actions: data.actions
+                });
+            }
+            else {
+                return self.registration.showNotification(data.title, {
+                        body: data.body,
+                        requireInteraction: data.requireInteraction
+                });
+            }
         }
-    }
-    else {
-        if (data.actions !== null && typeof data.actions !== 'undefined') {
-            return self.registration.showNotification(data.title, {
-                body: data.body,
-                requireInteraction: data.requireInteraction,
-                actions: data.actions
-            });
-        }
-        else {
-            return self.registration.showNotification(data.title,
-            {
-                body: data.body,
-                requireInteraction: data.requireInteraction
-            });
-        }
-    }
+    });
+    ev.waitUntil(showNotificationPromise);
 });
 
 self.addEventListener('notificationclick', e => {
