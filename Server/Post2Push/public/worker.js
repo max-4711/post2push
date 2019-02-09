@@ -9,7 +9,8 @@
                     icon: data.icon,
                     requireInteraction: data.requireInteraction,
                     timestamp: data.timestamp,
-                    actions: data.actions
+                    actions: data.actions,
+                    badge: data.badge
                 });
             }
             else {
@@ -17,7 +18,8 @@
                     body: data.body,
                     icon: data.icon,
                     requireInteraction: data.requireInteraction,
-                    timestamp: data.timestamp
+                    timestamp: data.timestamp,
+                    badge: data.badge
                 });
             }
         }
@@ -27,14 +29,16 @@
                     body: data.body,
                     requireInteraction: data.requireInteraction,
                     timestamp: data.timestamp,
-                    actions: data.actions
+                    actions: data.actions,
+                    badge: data.badge
                 });
             }
             else {
                 return self.registration.showNotification(data.title, {
-                        body: data.body,
-                        requireInteraction: data.requireInteraction,
-                        timestamp: data.timestamp
+                    body: data.body,
+                    requireInteraction: data.requireInteraction,
+                    timestamp: data.timestamp,
+                    badge: data.badge
                 });
             }
         }

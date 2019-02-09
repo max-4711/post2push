@@ -46,6 +46,7 @@ router.post('/', (req: any, res: express.Response) => {
     }
 
     const iconurl = 'https://' + appConfig.applicationUrl + '/public/success.png'
+    const badgeurl = 'https://' + appConfig.applicationUrl + '/public/badge.png'
 
     //1. Prüfen auf doppelte Subscription
     var getSubcriptionClonesQuery = 'SELECT token FROM subscription WHERE channel_name = ? AND client_token = ?';
@@ -72,7 +73,7 @@ router.post('/', (req: any, res: express.Response) => {
                 res.status(200).json({ 'Message': 'Subscription already present!', 'SubscriptionToken': subscriptionRows[0].token }).end();
 
                 let currentTimestamp = Math.floor(Date.now());
-                let payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert. Wirklich.', icon: iconurl, timestamp: currentTimestamp });
+                let payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert, du hast ' + req.body.ChannelName + ' abonniert. Wirklich.', icon: iconurl, timestamp: currentTimestamp, badge: badgeurl });
                 let deliveryDetails = JSON.parse(receiverRows[0].delivery_details);
                 var pushOptions = {
                     TTL: 3600
@@ -143,7 +144,7 @@ router.post('/', (req: any, res: express.Response) => {
                     res.status(201).json({ 'Message': 'Subscription created', 'SubscriptionToken': subscriptionToken }).end();
 
                     let currentTimestamp = Math.floor(Date.now());
-                    let payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert.', icon: iconurl, timestamp: currentTimestamp });
+                    let payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert, du hast ' + req.body.ChannelName + ' abonniert.', icon: iconurl, timestamp: currentTimestamp, badge: badgeurl });
                     let deliveryDetails = JSON.parse(receiverRows[0].delivery_details);
                     var pushOptions = {
                         TTL: 3600

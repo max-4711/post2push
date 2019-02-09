@@ -60,6 +60,7 @@
     <Content Include="public\api.html">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="public\badge.png" />
     <Content Include="public\details.png" />
     <Content Include="public\dismiss.png" />
     <Content Include="public\index.html">

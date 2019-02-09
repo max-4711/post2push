@@ -157,6 +157,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
         }
     }
 
+    const badgeurl = 'https://' + appConfig.applicationUrl + '/public/badge.png'
     let ttlMinutes = 4320; //3 Tage
     if (req.body.MessageTtl !== null && typeof req.body.MessageTtl === 'number') {
         if (req.body.MessageTtl > 0 && req.body.MessageTtl < 40321) { //Maximum: 28 Tage
@@ -226,7 +227,8 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                             title: req.body.MessageTitle,
                             body: req.body.MessageContent,
                             timestamp: currentTimestamp,
-                            requireInteraction: notificationIsPersistent
+                            requireInteraction: notificationIsPersistent,
+                            badge: badgeurl
                         };
                     }
                     else {
@@ -235,6 +237,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                             body: req.body.MessageContent,
                             timestamp: currentTimestamp,
                             requireInteraction: notificationIsPersistent,
+                            badge: badgeurl,
                             actions: [
                                 { action: req.body.ActionUrl, title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
                                 { action: 'dismiss', title: 'Schließen', icon: 'https://' + appConfig.applicationUrl + '/public/dismiss.png' }
@@ -249,7 +252,8 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                             body: req.body.MessageContent,
                             timestamp: currentTimestamp,
                             icon: channelRows[0].icon_url,
-                            requireInteraction: notificationIsPersistent
+                            requireInteraction: notificationIsPersistent,
+                            badge: badgeurl
                         };
                     }
                     else {
@@ -259,6 +263,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                             timestamp: currentTimestamp,
                             icon: channelRows[0].icon_url,
                             requireInteraction: notificationIsPersistent,
+                            badge: badgeurl,
                             actions: [
                                 { action: req.body.ActionUrl, title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
                                 { action: 'dismiss', title: 'Schließen', icon: 'https://' + appConfig.applicationUrl + '/public/dismiss.png' }
