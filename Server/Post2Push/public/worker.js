@@ -1,7 +1,6 @@
 ﻿self.addEventListener('push', ev => {
     const showNotificationPromise = new Promise((resolve, reject) => {
         const data = ev.data.json();
-        console.log('Got push event!', data);
 
         if (data.icon !== null && typeof data.icon !== 'undefined') {
             if (data.actions !== null && typeof data.actions !== 'undefined') {
