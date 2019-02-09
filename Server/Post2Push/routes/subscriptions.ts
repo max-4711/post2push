@@ -71,7 +71,8 @@ router.post('/', (req: any, res: express.Response) => {
 
                 res.status(200).json({ 'Message': 'Subscription already present!', 'SubscriptionToken': subscriptionRows[0].token }).end();
 
-                let payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert. Wirklich.', icon: iconurl });
+                let currentTimestamp = Math.floor(Date.now());
+                let payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert. Wirklich.', icon: iconurl, timestamp: currentTimestamp });
                 let deliveryDetails = JSON.parse(receiverRows[0].delivery_details);
                 var pushOptions = {
                     TTL: 3600
@@ -141,7 +142,8 @@ router.post('/', (req: any, res: express.Response) => {
 
                     res.status(201).json({ 'Message': 'Subscription created', 'SubscriptionToken': subscriptionToken }).end();
 
-                    let payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert.', icon: iconurl });
+                    let currentTimestamp = Math.floor(Date.now());
+                    let payload = JSON.stringify({ title: 'Pling!', body: 'Es funktioniert.', icon: iconurl, timestamp: currentTimestamp });
                     let deliveryDetails = JSON.parse(receiverRows[0].delivery_details);
                     var pushOptions = {
                         TTL: 3600

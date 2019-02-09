@@ -1,8 +1,7 @@
-﻿console.log('Loaded service worker!');
-
-self.addEventListener('push', ev => {
+﻿self.addEventListener('push', ev => {
     const showNotificationPromise = new Promise((resolve, reject) => {
         const data = ev.data.json();
+        console.log('Got push event!', data);
 
         if (data.icon !== null && typeof data.icon !== 'undefined') {
             if (data.actions !== null && typeof data.actions !== 'undefined') {
@@ -10,6 +9,7 @@ self.addEventListener('push', ev => {
                     body: data.body,
                     icon: data.icon,
                     requireInteraction: data.requireInteraction,
+                    timestamp: data.timestamp,
                     actions: data.actions
                 });
             }
@@ -17,7 +17,8 @@ self.addEventListener('push', ev => {
                 return self.registration.showNotification(data.title, {
                     body: data.body,
                     icon: data.icon,
-                    requireInteraction: data.requireInteraction
+                    requireInteraction: data.requireInteraction,
+                    timestamp: data.timestamp
                 });
             }
         }
@@ -26,13 +27,15 @@ self.addEventListener('push', ev => {
                 return self.registration.showNotification(data.title, {
                     body: data.body,
                     requireInteraction: data.requireInteraction,
+                    timestamp: data.timestamp,
                     actions: data.actions
                 });
             }
             else {
                 return self.registration.showNotification(data.title, {
                         body: data.body,
-                        requireInteraction: data.requireInteraction
+                        requireInteraction: data.requireInteraction,
+                        timestamp: data.timestamp
                 });
             }
         }

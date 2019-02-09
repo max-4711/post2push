@@ -167,6 +167,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
     var pushOptions = {
         TTL: ttlSeconds
     }
+    let currentTimestamp = Math.floor(Date.now());
 
     //1. Channel suchen
     var getAffectedChannelQuery = 'SELECT push_secret, icon_url FROM channel WHERE name = ?';
@@ -224,6 +225,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                         payload = {
                             title: req.body.MessageTitle,
                             body: req.body.MessageContent,
+                            timestamp: currentTimestamp,
                             requireInteraction: notificationIsPersistent
                         };
                     }
@@ -231,6 +233,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                         payload = {
                             title: req.body.MessageTitle,
                             body: req.body.MessageContent,
+                            timestamp: currentTimestamp,
                             requireInteraction: notificationIsPersistent,
                             actions: [
                                 { action: req.body.ActionUrl, title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
@@ -244,6 +247,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                         payload = {
                             title: req.body.MessageTitle,
                             body: req.body.MessageContent,
+                            timestamp: currentTimestamp,
                             icon: channelRows[0].icon_url,
                             requireInteraction: notificationIsPersistent
                         };
@@ -252,6 +256,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                         payload = {
                             title: req.body.MessageTitle,
                             body: req.body.MessageContent,
+                            timestamp: currentTimestamp,
                             icon: channelRows[0].icon_url,
                             requireInteraction: notificationIsPersistent,
                             actions: [
