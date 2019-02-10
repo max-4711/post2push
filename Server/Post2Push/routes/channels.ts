@@ -223,7 +223,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                 var payload;
                 if (channelRows[0].icon_url === null || typeof channelRows[0].icon_url === 'undefined' || channelRows[0].icon_url === '') {
                     if (req.body.ActionUrl === null || typeof req.body.ActionUrl === 'undefined' || req.body.ActionUrl === '') {
-                        if (req.body.MessageTag === null || typeof req.body.MessageTag === 'undefined' || req.body.MessageTag == '') {
+                        if (req.body.MessageTag === null || typeof req.body.MessageTag === 'undefined' || req.body.MessageTag === '') {
                             payload = {
                                 title: req.body.MessageTitle,
                                 body: req.body.MessageContent,

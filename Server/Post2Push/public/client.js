@@ -224,7 +224,7 @@ async function updateExistingEndpoints() {
         DeliveryDetails: deliveryDetails
     };
 
-    if (typeof cookie === 'undefined' || cookie === null || cookie == '') {        
+    if (typeof cookie === 'undefined' || cookie === null || cookie === '') {        
         console.log('No cookie detected -> endpoint needs to be registered.');
 
         fetch(registerEndpointTargetUrl, {
