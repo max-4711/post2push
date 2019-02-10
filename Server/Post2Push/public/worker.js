@@ -4,42 +4,90 @@
 
         if (data.icon !== null && typeof data.icon !== 'undefined') {
             if (data.actions !== null && typeof data.actions !== 'undefined') {
-                return self.registration.showNotification(data.title, {
-                    body: data.body,
-                    icon: data.icon,
-                    requireInteraction: data.requireInteraction,
-                    timestamp: data.timestamp,
-                    actions: data.actions,
-                    badge: data.badge
-                });
+                if (data.tag !== null && typeof data.tag !== 'undefined') {
+                    return self.registration.showNotification(data.title, {
+                        body: data.body,
+                        icon: data.icon,
+                        requireInteraction: data.requireInteraction,
+                        timestamp: data.timestamp,
+                        actions: data.actions,
+                        badge: data.badge,
+                        tag: data.tag
+                    });
+                }
+                else {
+                    return self.registration.showNotification(data.title, {
+                        body: data.body,
+                        icon: data.icon,
+                        requireInteraction: data.requireInteraction,
+                        timestamp: data.timestamp,
+                        actions: data.actions,
+                        badge: data.badge
+                    });
+                }
             }
             else {
-                return self.registration.showNotification(data.title, {
-                    body: data.body,
-                    icon: data.icon,
-                    requireInteraction: data.requireInteraction,
-                    timestamp: data.timestamp,
-                    badge: data.badge
-                });
+                if (data.tag !== null && typeof data.tag !== 'undefined') {
+                    return self.registration.showNotification(data.title, {
+                        body: data.body,
+                        icon: data.icon,
+                        requireInteraction: data.requireInteraction,
+                        timestamp: data.timestamp,
+                        badge: data.badge,
+                        tag: data.tag
+                    });
+                }
+                else {
+                    return self.registration.showNotification(data.title, {
+                        body: data.body,
+                        icon: data.icon,
+                        requireInteraction: data.requireInteraction,
+                        timestamp: data.timestamp,
+                        badge: data.badge
+                    });
+                }
             }
         }
         else {
             if (data.actions !== null && typeof data.actions !== 'undefined') {
-                return self.registration.showNotification(data.title, {
-                    body: data.body,
-                    requireInteraction: data.requireInteraction,
-                    timestamp: data.timestamp,
-                    actions: data.actions,
-                    badge: data.badge
-                });
+                if (data.tag !== null && typeof data.tag !== 'undefined') {
+                    return self.registration.showNotification(data.title, {
+                        body: data.body,
+                        requireInteraction: data.requireInteraction,
+                        timestamp: data.timestamp,
+                        actions: data.actions,
+                        badge: data.badge,
+                        tag: data.tag
+                    });
+                }
+                else {
+                    return self.registration.showNotification(data.title, {
+                        body: data.body,
+                        requireInteraction: data.requireInteraction,
+                        timestamp: data.timestamp,
+                        actions: data.actions,
+                        badge: data.badge
+                    });
+                }
             }
             else {
-                return self.registration.showNotification(data.title, {
-                    body: data.body,
-                    requireInteraction: data.requireInteraction,
-                    timestamp: data.timestamp,
-                    badge: data.badge
-                });
+                if (data.tag !== null && typeof data.tag !== 'undefined') {
+                    return self.registration.showNotification(data.title, {
+                        body: data.body,
+                        requireInteraction: data.requireInteraction,
+                        timestamp: data.timestamp,
+                        badge: data.badge,
+                        tag: data.tag
+                    });
+                }
+                else {
+                    return self.registration.showNotification(data.title, {
+                        body: data.body,
+                        requireInteraction: data.requireInteraction,
+                        timestamp: data.timestamp,
+                        badge: data.badge
+                    });
+                }
             }
         }
     });

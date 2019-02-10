@@ -223,52 +223,110 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                 var payload;
                 if (channelRows[0].icon_url === null || typeof channelRows[0].icon_url === 'undefined' || channelRows[0].icon_url === '') {
                     if (req.body.ActionUrl === null || typeof req.body.ActionUrl === 'undefined' || req.body.ActionUrl === '') {
-                        payload = {
-                            title: req.body.MessageTitle,
-                            body: req.body.MessageContent,
-                            timestamp: currentTimestamp,
-                            requireInteraction: notificationIsPersistent,
-                            badge: badgeurl
-                        };
+                        if (req.body.MessageTag === null || typeof req.body.MessageTag === 'undefined' || req.body.MessageTag == '') {
+                            payload = {
+                                title: req.body.MessageTitle,
+                                body: req.body.MessageContent,
+                                timestamp: currentTimestamp,
+                                requireInteraction: notificationIsPersistent,
+                                badge: badgeurl
+                            };
+                        }
+                        else {
+                            payload = {
+                                title: req.body.MessageTitle,
+                                body: req.body.MessageContent,
+                                timestamp: currentTimestamp,
+                                requireInteraction: notificationIsPersistent,
+                                badge: badgeurl,
+                                tag: req.body.MessageTag
+                            };
+                        }
                     }
                     else {
-                        payload = {
-                            title: req.body.MessageTitle,
-                            body: req.body.MessageContent,
-                            timestamp: currentTimestamp,
-                            requireInteraction: notificationIsPersistent,
-                            badge: badgeurl,
-                            actions: [
-                                { action: req.body.ActionUrl, title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
-                                { action: 'dismiss', title: 'Schließen', icon: 'https://' + appConfig.applicationUrl + '/public/dismiss.png' }
-                            ]
-                        };
+                        if (req.body.MessageTag === null || typeof req.body.MessageTag === 'undefined' || req.body.MessageTag == '') {
+                            payload = {
+                                title: req.body.MessageTitle,
+                                body: req.body.MessageContent,
+                                timestamp: currentTimestamp,
+                                requireInteraction: notificationIsPersistent,
+                                badge: badgeurl,                                
+                                actions: [
+                                    { action: req.body.ActionUrl, title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
+                                    { action: 'dismiss', title: 'Schließen', icon: 'https://' + appConfig.applicationUrl + '/public/dismiss.png' }
+                                ]
+                            };
+                        }
+                        else {
+                            payload = {
+                                title: req.body.MessageTitle,
+                                body: req.body.MessageContent,
+                                timestamp: currentTimestamp,
+                                requireInteraction: notificationIsPersistent,
+                                badge: badgeurl,
+                                tag: req.body.MessageTag,
+                                actions: [
+                                    { action: req.body.ActionUrl, title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
+                                    { action: 'dismiss', title: 'Schließen', icon: 'https://' + appConfig.applicationUrl + '/public/dismiss.png' }
+                                ]
+                            };
+                        }
                     }
                 }
                 else {
                     if (req.body.ActionUrl === null || typeof req.body.ActionUrl === 'undefined' || req.body.ActionUrl === '') {
-                        payload = {
-                            title: req.body.MessageTitle,
-                            body: req.body.MessageContent,
-                            timestamp: currentTimestamp,
-                            icon: channelRows[0].icon_url,
-                            requireInteraction: notificationIsPersistent,
-                            badge: badgeurl
-                        };
+                        if (req.body.MessageTag === null || typeof req.body.MessageTag === 'undefined' || req.body.MessageTag == '') {
+                            payload = {
+                                title: req.body.MessageTitle,
+                                body: req.body.MessageContent,
+                                timestamp: currentTimestamp,
+                                icon: channelRows[0].icon_url,
+                                requireInteraction: notificationIsPersistent,
+                                badge: badgeurl
+                            };
+                        }
+                        else {
+                            payload = {
+                                title: req.body.MessageTitle,
+                                body: req.body.MessageContent,
+                                timestamp: currentTimestamp,
+                                icon: channelRows[0].icon_url,
+                                requireInteraction: notificationIsPersistent,
+                                badge: badgeurl,
+                                tag: req.body.MessageTag
+                            };
+                        }
                     }
                     else {
-                        payload = {
-                            title: req.body.MessageTitle,
-                            body: req.body.MessageContent,
-                            timestamp: currentTimestamp,
-                            icon: channelRows[0].icon_url,
-                            requireInteraction: notificationIsPersistent,
-                            badge: badgeurl,
-                            actions: [
-                                { action: req.body.ActionUrl, title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
-                                { action: 'dismiss', title: 'Schließen', icon: 'https://' + appConfig.applicationUrl + '/public/dismiss.png' }
-                            ]
-                        };
+                        if (req.body.MessageTag === null || typeof req.body.MessageTag === 'undefined' || req.body.MessageTag == '') {
+                            payload = {
+                                title: req.body.MessageTitle,
+                                body: req.body.MessageContent,
+                                timestamp: currentTimestamp,
+                                icon: channelRows[0].icon_url,
+                                requireInteraction: notificationIsPersistent,
+                                badge: badgeurl,
+                                actions: [
+                                    { action: req.body.ActionUrl, title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
+                                    { action: 'dismiss', title: 'Schließen', icon: 'https://' + appConfig.applicationUrl + '/public/dismiss.png' }
+                                ]
+                            };
+                        }
+                        else {
+                            payload = {
+                                title: req.body.MessageTitle,
+                                body: req.body.MessageContent,
+                                timestamp: currentTimestamp,
+                                icon: channelRows[0].icon_url,
+                                requireInteraction: notificationIsPersistent,
+                                badge: badgeurl,
+                                tag: req.body.MessageTag,
+                                actions: [
+                                    { action: req.body.ActionUrl, title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
+                                    { action: 'dismiss', title: 'Schließen', icon: 'https://' + appConfig.applicationUrl + '/public/dismiss.png' }
+                                ]
+                            };
+                        }
                     }
                 }
                 var stringifiedPayload = JSON.stringify(payload);
