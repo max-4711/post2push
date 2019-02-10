@@ -2,90 +2,90 @@
     const showNotificationPromise = new Promise((resolve, reject) => {
         const data = ev.data.json();
 
-        if (data.icon !== null && typeof data.icon !== 'undefined') {
-            if (data.actions !== null && typeof data.actions !== 'undefined') {
-                if (data.tag !== null && typeof data.tag !== 'undefined') {
+        if (data.icon === null || typeof data.icon === 'undefined' || data.icon === '') {
+            if (data.actions === null || typeof data.actions === 'undefined') {
+                if (data.tag === null || typeof data.tag === 'undefined' || data.tag === '') {
                     return self.registration.showNotification(data.title, {
                         body: data.body,
-                        icon: data.icon,
                         requireInteraction: data.requireInteraction,
                         timestamp: data.timestamp,
-                        actions: data.actions,
-                        badge: data.badge,
-                        tag: data.tag
+                        badge: data.badge
                     });
                 }
                 else {
                     return self.registration.showNotification(data.title, {
                         body: data.body,
-                        icon: data.icon,
                         requireInteraction: data.requireInteraction,
                         timestamp: data.timestamp,
-                        actions: data.actions,
-                        badge: data.badge
+                        badge: data.badge,
+                        tag: data.tag
                     });
                 }
             }
             else {
-                if (data.tag !== null && typeof data.tag !== 'undefined') {
+                if (data.tag === null || typeof data.tag === 'undefined' || data.tag === '') {
                     return self.registration.showNotification(data.title, {
                         body: data.body,
-                        icon: data.icon,
                         requireInteraction: data.requireInteraction,
                         timestamp: data.timestamp,
-                        badge: data.badge,
-                        tag: data.tag
+                        actions: data.actions,
+                        badge: data.badge
                     });
                 }
                 else {
                     return self.registration.showNotification(data.title, {
                         body: data.body,
-                        icon: data.icon,
                         requireInteraction: data.requireInteraction,
                         timestamp: data.timestamp,
-                        badge: data.badge
+                        actions: data.actions,
+                        badge: data.badge,
+                        tag: data.tag
                     });
                 }
             }
         }
         else {
-            if (data.actions !== null && typeof data.actions !== 'undefined') {
-                if (data.tag !== null && typeof data.tag !== 'undefined') {
+            if (data.actions === null || typeof data.actions === 'undefined') {
+                if (data.tag === null || typeof data.tag === 'undefined' || data.tag === '') {
                     return self.registration.showNotification(data.title, {
                         body: data.body,
+                        icon: data.icon,
                         requireInteraction: data.requireInteraction,
                         timestamp: data.timestamp,
-                        actions: data.actions,
-                        badge: data.badge,
-                        tag: data.tag
+                        badge: data.badge
                     });
                 }
                 else {
                     return self.registration.showNotification(data.title, {
                         body: data.body,
+                        icon: data.icon,
                         requireInteraction: data.requireInteraction,
                         timestamp: data.timestamp,
-                        actions: data.actions,
-                        badge: data.badge
+                        badge: data.badge,
+                        tag: data.tag
                     });
                 }
             }
             else {
-                if (data.tag !== null && typeof data.tag !== 'undefined') {
+                if (data.tag === null || typeof data.tag === 'undefined' || data.tag === '') {
                     return self.registration.showNotification(data.title, {
                         body: data.body,
+                        icon: data.icon,
                         requireInteraction: data.requireInteraction,
                         timestamp: data.timestamp,
-                        badge: data.badge,
-                        tag: data.tag
+                        actions: data.actions,
+                        badge: data.badge
                     });
                 }
                 else {
                     return self.registration.showNotification(data.title, {
                         body: data.body,
+                        icon: data.icon,
                         requireInteraction: data.requireInteraction,
                         timestamp: data.timestamp,
-                        badge: data.badge
+                        actions: data.actions,
+                        badge: data.badge,
+                        tag: data.tag
                     });
                 }
             }
