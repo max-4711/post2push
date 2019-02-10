@@ -95,7 +95,6 @@
 });
 
 self.addEventListener('notificationclick', e => {
-    console.log('Got notification click', e);
     var notification = e.notification;
     var action = e.action;
 
@@ -105,11 +104,12 @@ self.addEventListener('notificationclick', e => {
     else if (action === 'dismiss') {
         notification.close();
     }
-    else {
-        var actionUrl = action;
-        notification.close();
+    else {        
         e.waitUntil(
             clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(windowClients => {
+                notification.close();
+                var actionUrl = action;
+
                 //Check auf schon offenes Fenster mit Ziel-URL
                 for (var i = 0; i < windowClients.length; i++) {
                     var client = windowClients[i];
