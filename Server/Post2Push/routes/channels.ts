@@ -244,7 +244,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                         }
                     }
                     else {
-                        if (req.body.MessageTag === null || typeof req.body.MessageTag === 'undefined' || req.body.MessageTag == '') {
+                        if (req.body.MessageTag === null || typeof req.body.MessageTag === 'undefined' || req.body.MessageTag === '') {
                             payload = {
                                 title: req.body.MessageTitle,
                                 body: req.body.MessageContent,
@@ -275,14 +275,14 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                 }
                 else {
                     if (req.body.ActionUrl === null || typeof req.body.ActionUrl === 'undefined' || req.body.ActionUrl === '') {
-                        if (req.body.MessageTag === null || typeof req.body.MessageTag === 'undefined' || req.body.MessageTag == '') {
+                        if (req.body.MessageTag === null || typeof req.body.MessageTag === 'undefined' || req.body.MessageTag === '') {
                             payload = {
                                 title: req.body.MessageTitle,
                                 body: req.body.MessageContent,
-                                timestamp: currentTimestamp,
-                                icon: channelRows[0].icon_url,
+                                timestamp: currentTimestamp,                                
                                 requireInteraction: notificationIsPersistent,
-                                badge: badgeurl
+                                badge: badgeurl,
+                                icon: channelRows[0].icon_url
                             };
                         }
                         else {
@@ -290,22 +290,22 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                                 title: req.body.MessageTitle,
                                 body: req.body.MessageContent,
                                 timestamp: currentTimestamp,
-                                icon: channelRows[0].icon_url,
                                 requireInteraction: notificationIsPersistent,
                                 badge: badgeurl,
+                                icon: channelRows[0].icon_url,                                
                                 tag: req.body.MessageTag
                             };
                         }
                     }
                     else {
-                        if (req.body.MessageTag === null || typeof req.body.MessageTag === 'undefined' || req.body.MessageTag == '') {
+                        if (req.body.MessageTag === null || typeof req.body.MessageTag === 'undefined' || req.body.MessageTag === '') {
                             payload = {
                                 title: req.body.MessageTitle,
                                 body: req.body.MessageContent,
-                                timestamp: currentTimestamp,
-                                icon: channelRows[0].icon_url,
+                                timestamp: currentTimestamp,                                
                                 requireInteraction: notificationIsPersistent,
                                 badge: badgeurl,
+                                icon: channelRows[0].icon_url,
                                 actions: [
                                     { action: req.body.ActionUrl, title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
                                     { action: 'dismiss', title: 'Schließen', icon: 'https://' + appConfig.applicationUrl + '/public/dismiss.png' }
@@ -316,10 +316,10 @@ router.post('/:name/push', (req: any, res: express.Response) => {
                             payload = {
                                 title: req.body.MessageTitle,
                                 body: req.body.MessageContent,
-                                timestamp: currentTimestamp,
-                                icon: channelRows[0].icon_url,
+                                timestamp: currentTimestamp,                                
                                 requireInteraction: notificationIsPersistent,
                                 badge: badgeurl,
+                                icon: channelRows[0].icon_url,
                                 tag: req.body.MessageTag,
                                 actions: [
                                     { action: req.body.ActionUrl, title: 'Details', icon: 'https://' + appConfig.applicationUrl + '/public/details.png' },
