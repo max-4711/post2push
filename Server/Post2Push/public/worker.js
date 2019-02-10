@@ -104,10 +104,10 @@ self.addEventListener('notificationclick', e => {
     else if (action === 'dismiss') {
         notification.close();
     }
-    else {        
+    else {
+        notification.close();
         e.waitUntil(
-            clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(windowClients => {
-                notification.close();
+            clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(windowClients => {                
                 var actionUrl = action;
 
                 //Check auf schon offenes Fenster mit Ziel-URL
