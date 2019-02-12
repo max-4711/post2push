@@ -38,14 +38,12 @@ app.use(function (req: any, res, next) {
 // development error handler: stacktraces
 if (app.get('env') === 'development') {
     app.use((err: any, req: any, res, next) => {
-        req.connection.release();
         res.status(err['status'] || 500).json({ 'Error': err.message }).end();
     });
 }
 
 // production error handler: no stacktraces leaked to user
 app.use((err: any, req: any, res, next) => {
-    req.connection.release();
     res.status(err.status || 500).json({ 'Error': err.message }).end();
 });
 
