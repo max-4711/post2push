@@ -346,8 +346,6 @@ router.post('/:name/push', (req: any, res: express.Response) => {
             });
         });
     });
-
-    return;
 });
 
 router.get('/:name/push', (req: any, res: express.Response) => {

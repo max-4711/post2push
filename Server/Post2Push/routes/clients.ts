@@ -71,11 +71,11 @@ router.post('/', (req: any, res: express.Response) => {
                     req.connection.release();
 
                     if (err) {
-                        res.status(500).json({ 'Error': 'Unknown database error' }).end();
+                        res.status(500).json({ 'Error': 'Unknown database error.', 'Message': 'Client already existing (this is not causing the error).' }).end();
                         return;
                     }
                     if (selectionResult.length === 0) {
-                        res.status(500).json({ 'Error': 'Unknown database error' }).end();
+                        res.status(500).json({ 'Error': 'Unknown database error', 'Message': 'Client already existing (this is not causing the error).' }).end();
                         return;
                     }
 
@@ -83,20 +83,23 @@ router.post('/', (req: any, res: express.Response) => {
                     return;
                 });
             }
-
+            else {
+                req.connection.release();
+                res.status(500).json({ 'Error': 'Unknown database error' }).end();
+                return;
+            }
+        }
+        else {
             req.connection.release();
-            res.status(500).json({ 'Error': 'Unknown database error' }).end();
+
+            if (result.affectedRows === 0) {                
+                res.status(400).json({ 'Error': 'Unable to create client' }).end();
+                return;
+            }
+
+            res.status(201).json({ 'Message': 'Client created.', 'ClientToken': clientToken }).end();
             return;
         }
-        if (result.affectedRows === 0) {
-            req.connection.release();
-            res.status(400).json({ 'Error': 'Unable to create client' }).end();
-            return;
-        }
-
-        req.connection.release();
-        res.status(201).json({ 'Message': 'Client created.', 'ClientToken': clientToken }).end();
-        return;
     });
 });
 
