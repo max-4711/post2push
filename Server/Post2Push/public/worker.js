@@ -1,7 +1,7 @@
 ﻿self.addEventListener('push', ev => {
-    const showNotificationPromise = new Promise((resolve, reject) => {
-        //const data = ev.data.json();
-        return ev.data.json().then(function (data) {
+    //const data = ev.data.json();
+    const showNotificationPromise = ev.data.json()
+        .then(function (data) {
             if (data.icon === null || typeof data.icon === 'undefined' || data.icon === '') {
                 if (data.actions === null || typeof data.actions === 'undefined') {
                     if (data.tag === null || typeof data.tag === 'undefined' || data.tag === '') {
@@ -90,8 +90,7 @@
                     }
                 }
             }
-        });
-    });
+        });    
     ev.waitUntil(showNotificationPromise);
 });
 
