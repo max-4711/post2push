@@ -17,6 +17,7 @@ var app = express();
 app.use(function (req: any, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH, OPTIONS, HEAD"); //'*' not supported by IE6 New-Gen a.k.a. Safari
     next();
 });
 app.use(require('body-parser').json());
