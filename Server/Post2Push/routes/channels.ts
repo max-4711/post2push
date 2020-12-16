@@ -191,7 +191,7 @@ router.post('/:name/push', (req: any, res: express.Response) => {
         }
 
         //2. Channel-Timestamp aktualisieren
-        var updateChannelQuery = 'UPDATE channel SET last_push_timestamp = TIMESTAMP() WHERE name = ?';
+        var updateChannelQuery = 'UPDATE channel SET last_push_timestamp = CURRENT_TIMESTAMP WHERE name = ?';
         updateChannelQuery = mysql.format(updateChannelQuery, req.params.name);
         req.connection.query(getAffectedChannelQuery, function (err, channelRows) {
             if (err) {
