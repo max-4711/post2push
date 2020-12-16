@@ -13,6 +13,12 @@ const appConfig = new AppConfiguration();
 
 console.log("Initializing express...");
 var app = express();
+//enable CORS
+app.use(function (req: any, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 app.use(require('body-parser').json());
 //app.use(app.router);
 app.use(appConfig.baseRoute + '/public', express.static(path.join(__dirname, 'public')));
@@ -46,14 +52,6 @@ if (app.get('env') === 'development') {
 app.use((err: any, req: any, res, next) => {
     res.status(err.status || 500).json({ 'Error': err.message }).end();
 });
-
-//enable CORS
-app.use(function (req: any, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-
 
 var port = 60000;
 if (process.env.PORT !== null && typeof process.env.PORT !== 'undefined') {
